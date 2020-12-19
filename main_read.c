@@ -4,13 +4,14 @@
 
 
 /* This is the number of addresses that can be used in the machine program for memory and stack. (S1, S2, S3, D1, D2, etc) */
-#define MAX_NO_OF_ADRESSES 50
+#define MAX_NO_OF_ADDRESSES 50
 /* This is the maximum length that the address can have (e.g. S99 would be valid, S100 would not) */
-#define MAX_ADRESS_SIZE 4
-/* This is the maximum content that can be saved under one adress */
-#define MAX_ADRESS_CONTENT 10
+#define MAX_ADDRESS_SIZE 4
+/* This is the maximum content that can be saved under one address */
+#define MAX_ADDRESS_CONTENT 10
 
 int flush_buffer(void);
+
 
 int main(int argc, char * argv[]){
 	
@@ -19,10 +20,10 @@ int main(int argc, char * argv[]){
 	
 	struct mcode_line{
 		
-		int step[MAX_ADRESS_SIZE];
-		char command[MAX_ADRESS_CONTENT]; 
-		int val1[MAX_ADRESS_SIZE];
-		int val2[MAX_ADRESS_SIZE];
+		int step[MAX_ADDRESS_SIZE];
+		char command[MAX_ADDRESS_CONTENT]; 
+		int val1[MAX_ADDRESS_SIZE];
+		int val2[MAX_ADDRESS_SIZE];
 	};
 	
 	struct mcode_line mcode[MAX_NO_OF_ADRESSES];
@@ -35,6 +36,8 @@ int main(int argc, char * argv[]){
 	}
 	
 	printf("Debug: Number of arguments passed: %i", argc);
+
+	
 	
 	return 0;
 }
