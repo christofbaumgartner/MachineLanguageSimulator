@@ -16,6 +16,7 @@ static char adress_values[MAX_NO_OF_ADRESSES][MAX_ADRESS_CONTENT];
 
 int load_program(void){
 	
+	/*
 	struct mcode_line{
 		
 		int step[MAX_ADRESS_SIZE];
@@ -25,7 +26,7 @@ int load_program(void){
 	}
 	
 	struct mcode_line mcode[MAX_NO_OF_ADRESSES];
-	
+	*/
 	
 	
 	char testadress[] = "P1";
