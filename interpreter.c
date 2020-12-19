@@ -13,16 +13,20 @@
 static char adress_labels[MAX_NO_OF_ADRESSES][MAX_ADRESS_SIZE];
 static char adress_values[MAX_NO_OF_ADRESSES][MAX_ADRESS_CONTENT];
 
+
 int load_program(void){
 	
-	struct mcode_line
-		{
-		char step[MAX_ADRESS_SIZE];
+	struct mcode_line{
+		
+		int step[MAX_ADRESS_SIZE];
 		char command[MAX_ADRESS_CONTENT]; 
-		char val1[MAX_ADRESS_SIZE];
-		char val1[MAX_ADRESS_SIZE];
+		int val1[MAX_ADRESS_SIZE];
+		int val2[MAX_ADRESS_SIZE];
 	}
+	
 	struct mcode_line mcode[MAX_NO_OF_ADRESSES];
+	
+	
 	
 	char testadress[] = "P1";
 	char testcontent[] = "INIT S2";
@@ -32,5 +36,9 @@ int load_program(void){
 }
 
 int execute_program(void){
+	
+	/* to implement: INIT, ADD, SUB, DEKREMENT, DEKREMENT0, INKREMENT, INKREMENT0, SPRUNG, SPRUNG0, RÜCKGABE, RÜCKGABE0 */
+	
+	
 	return 0;
 }
