@@ -9,6 +9,8 @@
 /* This is the maximum content that can be saved under one adress */
 #define MAX_ADRESS_CONTENT 10
 
+/* DIES IST EIN TEST */
+
 static char adress_labels[MAX_NO_OF_ADRESSES][MAX_ADRESS_SIZE];
 static char adress_values[MAX_NO_OF_ADRESSES][MAX_ADRESS_CONTENT];
 
