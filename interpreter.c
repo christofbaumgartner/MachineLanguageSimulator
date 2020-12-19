@@ -9,13 +9,21 @@
 /* This is the maximum content that can be saved under one adress */
 #define MAX_ADRESS_CONTENT 10
 
-/* DIES IST EIN TEST */
 
 static char adress_labels[MAX_NO_OF_ADRESSES][MAX_ADRESS_SIZE];
 static char adress_values[MAX_NO_OF_ADRESSES][MAX_ADRESS_CONTENT];
 
 int load_program(void){
-	/* test code */
+	
+	struct mcode_line
+		{
+		char step[MAX_ADRESS_SIZE];
+		char command[MAX_ADRESS_CONTENT]; 
+		char val1[MAX_ADRESS_SIZE];
+		char val1[MAX_ADRESS_SIZE];
+	}
+	struct mcode_line mcode[MAX_NO_OF_ADRESSES];
+	
 	char testadress[] = "P1";
 	char testcontent[] = "INIT S2";
 	strcpy(adress_labels[0], testadress);
