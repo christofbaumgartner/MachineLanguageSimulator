@@ -17,9 +17,10 @@ int process_line(char line[]);
 
 int main(int argc, char * argv[]){
 	
-	int i = 0;
+	int i = 0, j;
 	char c;
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
+	char line[MAX_INPUT_LINE_LENGTH];
 	char help1[] = "-h";
 	char help2[] = "--help";
 	
@@ -36,20 +37,43 @@ int main(int argc, char * argv[]){
 	
 	c = getchar();
 	while (c != '\0' && i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) -1){
-		cmdline_input[i++] = c;
-		c = getchar();
+		if (c != '\0' || c != EOF){
+			cmdline_input[i++] = c;
+			c = getchar();
+		} else {
+			cmdline_input[i++] = '\0';
+		}
 	}
 	
-	/* DEBUG START*/
+	/* DEBUG START: Print back Code*/
 	for (i = 0; i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) - 1; i++){
 		if (cmdline_input[i] != '\0'){
 			printf("%c", cmdline_input[i]);
+		} 
+	}
+	/* DEBUG END*/
+	
+	
+	
+	i = 0;	
+	while (cmdline_input[i] != '\n'){
+		line[i] = cmdline_input[i];
+		i++;
+	}
+	line[i] = '\0';
+				
+	/* DEBUG START: Print back line */ 
+	printf("\n");
+	for (j = 0; j < (MAX_INPUT_LINE_LENGTH) - 1; ++j){
+		if (line[j] != '\0'){
+			printf("%c", line[j]);
 		} else { 
 			continue;
 		}
 	}
+		/* DEBUG END*/
+		
 	
-	/* DEBUG END*/
 	
 	if ((strcmp(argv[1], help1) == 0) || (strcmp(argv[1], help2) == 0)){
 		printf("\n Help:\n\n Pass your pseudo machine code file: %s.exe < yourcode.mc\n\n An example for pseudo code is:\n\n", argv[0]);
