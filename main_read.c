@@ -9,14 +9,20 @@
 #define MAX_ADDRESS_SIZE 4
 /* This is the maximum content that can be saved under one address */
 #define MAX_ADDRESS_CONTENT 10
+/* Max length for a line of pseudo machine code */
+#define MAX_INPUT_LINE_LENGTH 22
 
 int flush_buffer(void);
-
+int process_line(char line[]);
 
 int main(int argc, char * argv[]){
 	
+	int i = 0;
+	char c;
+	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char help1[] = "-h";
 	char help2[] = "--help";
+	
 	
 	struct mcode_line{
 		
@@ -26,8 +32,24 @@ int main(int argc, char * argv[]){
 		int val2[MAX_ADDRESS_SIZE];
 	};
 	
-	struct mcode_line mcode[MAX_NO_OF_ADRESSES];
+	struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 	
+	c = getchar();
+	while (c != '\0' && i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) -1){
+		cmdline_input[i++] = c;
+		c = getchar();
+	}
+	
+	/* DEBUG START*/
+	for (i = 0; i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) - 1; i++){
+		if (cmdline_input[i] != '\0'){
+			printf("%c", cmdline_input[i]);
+		} else { 
+			continue;
+		}
+	}
+	
+	/* DEBUG END*/
 	
 	if ((strcmp(argv[1], help1) == 0) || (strcmp(argv[1], help2) == 0)){
 		printf("\n Help:\n\n Pass your pseudo machine code file: %s.exe < yourcode.mc\n\n An example for pseudo code is:\n\n", argv[0]);
@@ -35,10 +57,8 @@ int main(int argc, char * argv[]){
 		return 0;
 	}
 	
-	printf("Debug: Number of arguments passed: %i", argc);
+	printf("\n Debug: Number of arguments passed: %i", argc);
 
-	
-	
 	return 0;
 }
 
@@ -47,4 +67,11 @@ int flush_buffer(void){
 	int c;
 	while ((c = getchar()) != EOF){}
 	return c != EOF;
+}
+
+
+int process_line(char line[]){
+	
+	
+	return 0;
 }
