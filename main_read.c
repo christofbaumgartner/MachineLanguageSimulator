@@ -12,7 +12,7 @@
 /* Max length for a line of pseudo machine code */
 #define MAX_INPUT_LINE_LENGTH 22
 
-int flush_buffer(void);
+
 int process_line(char line[]);
 
 int main(int argc, char * argv[]){
@@ -22,10 +22,7 @@ int main(int argc, char * argv[]){
 	char c;
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
-	char help1[] = "-h";
-	char help2[] = "--help";
-	
-	
+		
 	struct mcode_line{
 		
 		int step[MAX_ADDRESS_SIZE];
@@ -93,13 +90,6 @@ int main(int argc, char * argv[]){
 	
 	return 0;
 	
-}
-
-
-int flush_buffer(void){
-	int c;
-	while ((c = getchar()) != EOF){}
-	return c != EOF;
 }
 
 
