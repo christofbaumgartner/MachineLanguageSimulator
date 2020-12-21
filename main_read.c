@@ -13,12 +13,22 @@
 #define MAX_INPUT_LINE_LENGTH 22
 
 
-int process_line(char line[]);
+struct mcode_line{
+		
+		int step[MAX_ADDRESS_SIZE];
+		char command[MAX_ADDRESS_CONTENT]; 
+		int val1[MAX_ADDRESS_SIZE];
+		int val2[MAX_ADDRESS_SIZE];
+	};
+	
+struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
+
+void process_line(char line[]);
 
 int main(int argc, char * argv[]){
 	
 	
-	int i = 0, j;
+	int i = 0, j = 0, k = 0;
 	char c;
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
@@ -59,22 +69,34 @@ int main(int argc, char * argv[]){
 	
 	
 	printf("Split line. Marker 3\n");
-	i = 0;	
-	while (cmdline_input[i] != '\n' && cmdline_input[i] != '\0'){
-		line[i] = cmdline_input[i];
-		i++;
+
+	/* Split to single lines and process */
+	for (i = 0; i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) - 1; i++){
+		if (cmdline_input[i] != '\n'){
+			line[j] = cmdline_input[i];
+			j++;
+		} else if (cmdline_input[i] == '\0' && cmdline_input[i + 1] == '\0'){ 
+			break;
+		} else {
+			line[j] = '\0';
+			process_line(line);
+			j = 0;
+		}
+		
 	}
-	line[i] = '\0';
-			
-	printf("Print back line. Marker 4\n");
+	
+	
+	
+	printf("\nPrint back line. Marker 4\n");
 	
 	/* DEBUG START: Print back line */ 
-	printf("\n");
-	for (j = 0; j < (MAX_INPUT_LINE_LENGTH) - 1; ++j){
-		if (line[j] != '\0'){
-			printf("%c", line[j]);
-		} else { 
-			continue;
+	for (k = 0; k < (MAX_INPUT_LINE_LENGTH) - 1; k++){
+		if (line[k] != '\0'){
+			printf("%c", line[k]);
+		} else if (line[k] =='\0' && line[k + 1] == '\0'){ 
+			break;
+		} else {
+			printf("\n");
 		}
 	}
 	/* DEBUG END*/
@@ -93,8 +115,22 @@ int main(int argc, char * argv[]){
 }
 
 
-int process_line(char line[]){
+void process_line(char line[]){
+	
+	int k,l;
 	
 	
-	return 0;
+	/* DEBUG START: Print back line */ 
+	for (k = 0; k < (MAX_INPUT_LINE_LENGTH) - 1; k++){
+		if (line[k] != '\0'){
+			printf("%c", line[k]);
+		} else if (line[k] =='\0' && line[k + 1] == '\0'){ 
+			return;
+		} else {
+			printf("\n");
+			return;
+		}
+	}
+	/* DEBUG END*/
+	return;
 }
