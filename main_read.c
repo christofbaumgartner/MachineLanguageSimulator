@@ -23,12 +23,12 @@ struct mcode_line{
 	
 struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 
-void process_line(char line[]);
+void process_line(int count, char line[]);
 
 int main(int argc, char * argv[]){
 	
 	
-	int i = 0, j = 0, k = 0;
+	int i = 0, j = 0, k = 0, count = 0;
 	char c;
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
@@ -74,13 +74,15 @@ int main(int argc, char * argv[]){
 	for (i = 0; i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) - 1; i++){
 		if (cmdline_input[i] != '\n'){
 			line[j] = cmdline_input[i];
+			count++;
 			j++;
-		} else if (cmdline_input[i] == '\0' && cmdline_input[i + 1] == '\0'){ 
-			break;
+		/*} else if (cmdline_input[i] == '\0' && cmdline_input[i + 1] == '\0'){ 
+			break;*/
 		} else {
 			line[j] = '\0';
-			process_line(line);
+			process_line(count, line);
 			j = 0;
+			count = 0;
 		}
 		
 	}
@@ -115,22 +117,20 @@ int main(int argc, char * argv[]){
 }
 
 
-void process_line(char line[]){
+void process_line(int count, char line[]){
 	
-	int k,l;
-	
-	
+	int k;
+		
 	/* DEBUG START: Print back line */ 
 	for (k = 0; k < (MAX_INPUT_LINE_LENGTH) - 1; k++){
-		if (line[k] != '\0'){
+		if (line[k] != '\0' && k < count){
 			printf("%c", line[k]);
 		} else if (line[k] =='\0' && line[k + 1] == '\0'){ 
+			printf("\nNext Line.\n");
 			return;
-		} else {
-			printf("\n");
-			return;
-		}
+		} 
 	}
+	
 	/* DEBUG END*/
 	return;
 }
