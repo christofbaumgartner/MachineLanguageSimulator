@@ -11,21 +11,24 @@
 /* Max length for a line of pseudo machine code */
 #define MAX_INPUT_LINE_LENGTH 22
 
+#define ADD 'a';
+#define ADD0
+
 
 struct mcode_line{
-		
-		int step[MAX_ADDRESS_SIZE];
+		char regtype;
+		int step;
 		char command[MAX_ADDRESS_CONTENT]; 
-		char type1[1];
-		int val1[MAX_ADDRESS_SIZE];
-		char type2[1];
-		int val2[MAX_ADDRESS_SIZE];
+		char type1;
+		int val1;
+		char type2;
+		int val2;
 	};
 	
 struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 
 
-int process_line(int char_count, int line_count, char line[], struct mcode[]*);
+int process_line(int char_count, int line_count, char line[]);
 
 
 int main(int argc, char * argv[]){
@@ -36,16 +39,6 @@ int main(int argc, char * argv[]){
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
 		
-	for (i = 0; i < MAX_NO_OF_ADDRESSES; i++){
-		mcode[i].step = 0;
-		mcode[i].command = 'void';
-		mcode[i].type1 = 'v';
-		mcode[i].val1 = 0;
-		mcode[i].type2 = 'v';
-		mcode[i].val2 = 0;
-		
-	}
-	
 		
 	i = 0;
 	printf("Enter your pseudo machine code. Type '!' when done.\n\n");
@@ -73,6 +66,15 @@ int main(int argc, char * argv[]){
 	
 	printf("Split line. Marker 3\n");
 
+	/* TEST START: Modify array of structs */
+	struct mcode_line my_line;
+	my_line.step = 1;
+	strcpy(my_line.command, "ADD");
+	mcode[0] = my_line;
+	printf("%i\n", mcode[0].step);
+	printf("%s\n", mcode[0].command);
+	/* TEST END */
+
 	/* Split to single lines and process */
 	for (i = 0; i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) - 1; i++){
 		if (cmdline_input[i] != '\n'){
@@ -83,7 +85,7 @@ int main(int argc, char * argv[]){
 			break;*/
 		} else {
 			line[j] = '\0';
-			file_check = process_line(char_count, line_count, line, &mcode[]);
+			file_check = process_line(char_count, line_count, line, mcode[]);
 			j = 0;
 			char_count = 0;
 			line_count++;
