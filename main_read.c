@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 /* This is the number of addresses that can be used in the machine program for memory and stack. (S1, S2, S3, D1, D2, etc) */
 #define MAX_NO_OF_ADDRESSES 50
 /* This is the maximum length that the address can have (e.g. S99 would be valid, S100 would not) */
@@ -17,18 +16,22 @@ struct mcode_line{
 		
 		int step[MAX_ADDRESS_SIZE];
 		char command[MAX_ADDRESS_CONTENT]; 
+		char type1[1];
 		int val1[MAX_ADDRESS_SIZE];
+		char type2[1];
 		int val2[MAX_ADDRESS_SIZE];
 	};
 	
 struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 
-void process_line(int count, char line[]);
+
+int process_line(int char_count, int line_count, char line[]);
+
 
 int main(int argc, char * argv[]){
 	
 	
-	int i = 0, j = 0, k = 0, count = 0;
+	int i = 0, j = 0, k = 0, char_count = 0, file_check, line_count = 0;
 	char c;
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
@@ -74,22 +77,24 @@ int main(int argc, char * argv[]){
 	for (i = 0; i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) - 1; i++){
 		if (cmdline_input[i] != '\n'){
 			line[j] = cmdline_input[i];
-			count++;
+			char_count++;
 			j++;
 		/*} else if (cmdline_input[i] == '\0' && cmdline_input[i + 1] == '\0'){ 
 			break;*/
 		} else {
 			line[j] = '\0';
-			process_line(count, line);
+			file_check = process_line(char_count, line_count, line);
 			j = 0;
-			count = 0;
+			char_count = 0;
+			line_count++;
 		}
 		
 	}
 	
 	
 	
-	printf("\nPrint back line. Marker 4\n");
+	printf("\nParse line: %i. Marker 4\n", file_check);
+	/* printf("mcode.step = %d.\n", mcode[line_count].step); */
 	
 	/* DEBUG START: Print back line */ 
 	for (k = 0; k < (MAX_INPUT_LINE_LENGTH) - 1; k++){
@@ -117,20 +122,51 @@ int main(int argc, char * argv[]){
 }
 
 
-void process_line(int count, char line[]){
+int process_line(int char_count, int line_count, char line[]){
 	
-	int k;
-		
-	/* DEBUG START: Print back line */ 
+	int i, j, sum = 0, factor = 1, k;
+	
+	/* Extract values and place in struct mcode */
+	
+	
+	for (i = 0; i < (MAX_INPUT_LINE_LENGTH) - 1; i++){
+		if (line[i] != '\0' && i < char_count){
+			factor = 0;
+			j = 0;
+			while(line[i] != 32 && line[i] != 9){
+				if (line[i] == 'P' || line[i] == 'p'){
+					j = i + 1;
+				}		
+				if (line[j] <= 47 || line[j] >= 58){
+					return 0;
+				} else {
+					sum = sum + (((int) line[j] - 47) * factor);
+					/* mcode[line_count].step = sum; */
+					printf("Linecount: %i, Sum: %i \n", line_count, sum);
+					factor = factor * 10;
+					j++;
+				}
+				i++;
+			}
+			
+			
+		} else if (line[i] =='\0' && line[i + 1] == '\0'){ 
+			printf("\nParse done.\n");
+			return 0;
+		} 
+	
+	}
+	
+	/* DEBUG START: Print back line  
 	for (k = 0; k < (MAX_INPUT_LINE_LENGTH) - 1; k++){
-		if (line[k] != '\0' && k < count){
+		if (line[k] != '\0' && k < char_count){
 			printf("%c", line[k]);
 		} else if (line[k] =='\0' && line[k + 1] == '\0'){ 
 			printf("\nNext Line.\n");
-			return;
+			break;
 		} 
 	}
 	
-	/* DEBUG END*/
-	return;
+	 DEBUG END*/
+	return 1;
 }
