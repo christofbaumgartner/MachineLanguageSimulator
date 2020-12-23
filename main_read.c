@@ -25,7 +25,7 @@ struct mcode_line{
 struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 
 
-int process_line(int char_count, int line_count, char line[]);
+int process_line(int char_count, int line_count, char line[], struct mcode[]*);
 
 
 int main(int argc, char * argv[]){
@@ -36,18 +36,18 @@ int main(int argc, char * argv[]){
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
 		
-	struct mcode_line{
+	for (i = 0; i < MAX_NO_OF_ADDRESSES; i++){
+		mcode[i].step = 0;
+		mcode[i].command = 'void';
+		mcode[i].type1 = 'v';
+		mcode[i].val1 = 0;
+		mcode[i].type2 = 'v';
+		mcode[i].val2 = 0;
 		
-		int step[MAX_ADDRESS_SIZE];
-		char command[MAX_ADDRESS_CONTENT]; 
-		int val1[MAX_ADDRESS_SIZE];
-		int val2[MAX_ADDRESS_SIZE];
-	};
-	
-	struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
-	
+	}
 	
 		
+	i = 0;
 	printf("Enter your pseudo machine code. Type '!' when done.\n\n");
 	
 	c = getchar();
@@ -83,7 +83,7 @@ int main(int argc, char * argv[]){
 			break;*/
 		} else {
 			line[j] = '\0';
-			file_check = process_line(char_count, line_count, line);
+			file_check = process_line(char_count, line_count, line, &mcode[]);
 			j = 0;
 			char_count = 0;
 			line_count++;
