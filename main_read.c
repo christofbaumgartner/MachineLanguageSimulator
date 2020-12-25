@@ -190,7 +190,7 @@ int process_line(int char_count, int line_count, char line[]){
 				printf("temp_line.command: %s\n", temp_line.command);
 				div_count++;
 				
-				if (line[i] == 'P' || line[i] == 'p'){ 
+				if (line[i] == 'P' || line[i] == 'p'){  
 				
 				} else if (line[i] == 'D' || line[i] == 's'){
 					
