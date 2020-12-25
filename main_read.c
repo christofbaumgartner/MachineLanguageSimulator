@@ -66,14 +66,7 @@ int main(int argc, char * argv[]){
 	
 	printf("Split line. Marker 3\n");
 
-	/* TEST START: Modify array of structs */
-	struct mcode_line my_line;
-	my_line.step = 1;
-	strcpy(my_line.command, "ADD");
-	mcode[0] = my_line;
-	printf("%i\n", mcode[0].step);
-	printf("%s\n", mcode[0].command);
-	/* TEST END */
+	
 
 	/* Split to single lines and process */
 	for (i = 0; i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) - 1; i++){
@@ -85,7 +78,7 @@ int main(int argc, char * argv[]){
 			break;*/
 		} else {
 			line[j] = '\0';
-			file_check = process_line(char_count, line_count, line, mcode[]);
+			file_check = process_line(char_count, line_count, line);
 			j = 0;
 			char_count = 0;
 			line_count++;
@@ -126,49 +119,101 @@ int main(int argc, char * argv[]){
 
 int process_line(int char_count, int line_count, char line[]){
 	
-	int i, j, sum = 0, factor = 1, k;
+	int i, j, k, sum = 0, factor = 1, div_count = 0, iscommand = 0;
+	char command[MAX_ADDRESS_CONTENT];
+	struct mcode_line temp_line;
+	/* TEST START: Modify array of structs 
+	struct mcode_line my_line;
+	my_line.step = 1;
+	strcpy(my_line.command, "ADD");
+	mcode[0] = my_line;
+	printf("%i\n", mcode[0].step);
+	printf("%s\n", mcode[0].command);
+	TEST END */
 	
 	/* Extract values and place in struct mcode */
 	
 	
 	for (i = 0; i < (MAX_INPUT_LINE_LENGTH) - 1; i++){
 		if (line[i] != '\0' && i < char_count){
-			factor = 0;
-			j = 0;
-			while(line[i] != 32 && line[i] != 9){
-				if (line[i] == 'P' || line[i] == 'p'){
-					j = i + 1;
-				}		
-				if (line[j] <= 47 || line[j] >= 58){
-					return 0;
-				} else {
-					sum = sum + (((int) line[j] - 47) * factor);
-					/* mcode[line_count].step = sum; */
-					printf("Linecount: %i, Sum: %i \n", line_count, sum);
-					factor = factor * 10;
-					j++;
+			
+			if (line[i] == 'P' || line[i] == 'p'){					
+				printf("P detetcted.\n");
+				iscommand = 1;
+				factor = 1;
+				j = i + 1;
+				
+				/* Parse Step */
+				
+				while(line[j] != 32 && line[i] != 9){	
+				
+					if (line[j] > 47 && line[j] < 58){
+						
+						sum = sum * factor + ((line[j] - 48));
+						temp_line.step = sum;
+						if (factor == 1){
+							factor = 10;
+						}
+												
+						/* debug start */
+						printf("temp_line[i].step: %i\n", temp_line.step);
+						printf("Digit j: %i. line[j]: %i. ", j, line[j]);
+						printf("Linecount: %i, Sum: %i, Factor: %i\n", line_count, sum, factor);
+						/* debug end */
+												
+						j++;
+					
+					} else {
+					printf("Invalid programm code in line: %i. Aborting. j: %i, %c, i: %i, %c\n", line_count, j, line[j], i, line[i]);
+						return 0;
+					}
+					
+					i++;
 				}
-				i++;
+				div_count++;
+				i = i + 2;
+				
+				/* Parse Command and Values */
+			
+				if (iscommand == 1){
+				
+				k = 0;
+				
+				while(line[i] != 32 && line[i] != 9){
+					command[k] = line[i];
+					k++;
+					i++;
+				}
+				command[k] = '\0';
+												
+				strncpy(temp_line.command, command, MAX_ADDRESS_CONTENT); 
+				printf("temp_line.command: %s\n", temp_line.command);
+				div_count++;
+				
+				if (line[i] == 'P' || line[i] == 'p'){ 
+				
+				} else if (line[i] == 'D' || line[i] == 's'){
+					
+				} else if (line[i] == 'D' || line[i] == 'd'){
+			
+				}
+				iscommand = 0;
+				}
 			}
 			
-			
+			mcode[line_count] = temp_line;
+			/*
+			printf("temp_line[i].step: %i\n", temp_line.step);
+			printf("temp_line[i].command: %s\n", temp_line.command);
+			*/
 		} else if (line[i] =='\0' && line[i + 1] == '\0'){ 
-			printf("\nParse done.\n");
-			return 0;
+			
+			
+			printf("\nParse line done.\n");
+			return 1;
 		} 
 	
 	}
 	
-	/* DEBUG START: Print back line  
-	for (k = 0; k < (MAX_INPUT_LINE_LENGTH) - 1; k++){
-		if (line[k] != '\0' && k < char_count){
-			printf("%c", line[k]);
-		} else if (line[k] =='\0' && line[k + 1] == '\0'){ 
-			printf("\nNext Line.\n");
-			break;
-		} 
-	}
-	
-	 DEBUG END*/
-	return 1;
+	return 0;
 }
