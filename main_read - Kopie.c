@@ -11,9 +11,12 @@
 /* Max length for a line of pseudo machine code */
 #define MAX_INPUT_LINE_LENGTH 22
 
+#define ADD 'a';
+#define ADD0
+
+
 struct mcode_line{
 		char regtype;
-		int iscommand;
 		int step;
 		char command[MAX_ADDRESS_CONTENT]; 
 		char type1;
@@ -26,8 +29,6 @@ struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 
 
 int process_line(int char_count, int line_count, char line[]);
-int sum_array(char sline[]);
-
 
 
 int main(int argc, char * argv[]){
@@ -118,10 +119,8 @@ int main(int argc, char * argv[]){
 
 int process_line(int char_count, int line_count, char line[]){
 	
-
-	int i, j = 1, k, l, div_count = 0;
+	int i, j, k, l, sum = 0, factor = 1, div_count = 0, iscommand = 0, isval = 1;
 	char command[MAX_ADDRESS_CONTENT];
-	char temp[MAX_ADDRESS_CONTENT];
 	struct mcode_line temp_line;
 	
 	/* Extract values and place in struct mcode */
@@ -129,130 +128,119 @@ int process_line(int char_count, int line_count, char line[]){
 	for (i = 0; i < (MAX_INPUT_LINE_LENGTH) - 1; i++){
 		if (line[i] != '\0' && i < char_count){
 			
-			if ((i == 0) && (line[i] == 'P' || line[i] == 'p')){	
-				temp_line.iscommand = 1;
-				temp_line.regtype = 'P';
-				while(line[j] != 32 && line[j] != 9){	
-					temp[j - 1] = line[j];
-					j++;
-				}
-				temp[j - 1] = '\0';
-				temp_line.step = sum_array(temp);
-				div_count++;
-										
-			} else if ((i == 0) && (line[i] == 'D' || line[i] == 'd')){	
-				temp_line.iscommand = 0;
-				temp_line.regtype = 'D';
-				printf("D");
-				strcpy(temp_line.command, "0");
-				temp_line.step = -1;
-				while(line[j] != 32 && line[j] != 9){	
-					temp[j - 1] = line[j];
-					j++;
-				} 
-				temp[j - 1] = '\0';
-				temp_line.val1 = sum_array(temp);
-				div_count++;
-								
-			} else if ((i == 0) && (line[i] == 'S' || line[i] == 's')){	
-				temp_line.iscommand = 0;
-				temp_line.regtype = 'S';
-				printf("S");
-				strcpy(temp_line.command, "0");
-				temp_line.step = -1;
-				while(line[j] != 32 && line[j] != 9){	
-					temp[j - 1] = line[j];
-					j++;
-				} 
-				temp[j - 1] = '\0';
-				temp_line.val1 = sum_array(temp);
-				div_count++;
+			if (line[i] == 'P' || line[i] == 'p'){					
+				iscommand = 1;
+				sum = 0;
+				factor = 1;
+				j = i + 1;
 				
+				/* Parse Step */
 				
-			} /* else {
-				printf("Invalid programm code in line: %i. Aborting.\n", line_count);
-				return 0;
-			}*/
-			
+				while(line[j] != 32 && line[i] != 9){	
+				
+					if (line[j] > 47 && line[j] < 58){
 						
-			if ((temp_line.iscommand == 1) && (div_count == 1)){
-				
-				for (l = 0; l < div_count; l++){
-					j = 0;
-					while(line[j] != 32 && line[j] != 9){
+						sum = sum * factor + ((line[j] - 48));
+						temp_line.step = sum;
+						if (factor == 1){
+							factor = 10;
+						}
+						
 						j++;
+					
+					} else {
+					printf("Invalid programm code in line: %i. Aborting. j: %i, %c, i: %i, %c\n", line_count, j, line[j], i, line[i]);
+						return 0;
 					}
-					j++;
+					
+					i++;
 				}
+				div_count++;
+				i = i + 2;
+				
+				/* Parse Command and Values */
+			
+				if (iscommand == 1){
 				
 				k = 0;
 				
-				while(line[j] != 32 && line[j] != 9){
-					command[k] = line[j];
+				while(line[i] != 32 && line[i] != 9){
+					command[k] = line[i];
 					k++;
-					j++;
+					i++;
 				}
 				command[k] = '\0';
 												
 				strncpy(temp_line.command, command, MAX_ADDRESS_CONTENT); 
 				div_count++;
-			}
-		
-			if ((temp_line.iscommand == 1) && (div_count == 2)){
-				
-				for (l = 0; l < div_count; l++){
-					j = 0;
-					while(line[j] != 32 && line[j] != 9){
-						j++;
-					}
-					j++;
 				}
-					
-			
+				
+				
+				sum = 0;
+				factor = 1;
+				isval = 1;
+				
+				
+				/*
+				while(line[i] > 47 && line[i] < 58){
+					sum = sum * factor + ((line[i] - 48));
+					printf("Sum Val: %i", sum);
+					if (factor == 1){
+						factor = 10;
+					}				
+					if (isval == 1){
+						temp_line.val1 = sum;
+						temp_line.val2 = ' ';
+					} else if (isval == 2){
+						temp_line.val2 = sum;
+					}	
+								
+				} if (line[i] == 'P' || line[i] == 'D' || line[i] == 'S'){
+					if (isval == 1){
+						temp_line.type1 = line[i];
+						temp_line.type2 = ' ';
+					} else if (isval == 2){
+						temp_line.type2 = line[i];
+					}
+						
+				} else if (line[i] == ','){
+					isval = 2;
+					sum = 0;
+					factor = 1;
+				
+				} else {
+					printf("Invalid programm code in line: %i. Aborting. %c\n", line_count, line[i]);
+					return 0;
+				} 
+				*/
+				
+				/* Parse Stack and Progamm Memory */
+				
 			}
+			
+			iscommand = 0;
+			
 			
 		} else if (line[i] =='\0' && line[i + 1] == '\0'){ 
 
 			printf("\nParse line done.\n");
 			
 			/* debug start */
-			printf("Line: %i\t", line_count + 1);
-			printf("RegType: %c\t", temp_line.regtype);
-			printf("IsC: %i\t", temp_line.iscommand);
+			printf("Line: %i ", line_count + 1);
 			printf("step: %i\t", temp_line.step);
 			printf("command: %s\t", temp_line.command);
 			printf("type1: %c\t", temp_line.type1);
 			printf("val1: %i\t", temp_line.val1);
-			printf("type2: %c\t", temp_line.type2);
-			printf("val2: %i\n", temp_line.val2);
+			printf("type2: %c\t", temp_line.type1);
+			printf("val2: %i\n", temp_line.val1);
 			/* debug end */
 						
 			mcode[line_count] = temp_line;
 			return 1;
 		} 
 	
+		
 	}
+	
 	return 0;
-	
-}
-
-	
-	
-
-
-
-int sum_array(char line[]){
-	
-	int i = 0, sum = 0, factor = 1;
-	
-	while (line[i] > 47 && line[i] < 58 && line[i] != '\0'){
-		sum = sum * factor + ((line[i] - 48));
-		if (factor == 1){
-			factor = 10;
-		}
-		i++;
-	}
-	
-	return sum;
-	
 }
