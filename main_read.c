@@ -33,14 +33,14 @@ int sum_array(char sline[]);
 int main(int argc, char * argv[]){
 	
 	
-	int i = 0, j = 0, char_count = 0, file_check = 1, line_count = 0;
+	int i = 0, j = 0, char_count = 0, file_check = 1, line_count = 0, error = 0;
 	char c;
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
 		
 		
 	i = 0;
-	printf("Enter your pseudo machine code or '--help'. Type '!' when done.\n\n");
+	printf("\nEnter your pseudo machine code or '--help'. Type '!' when done.\n\n");
 	
 	c = getchar();
 	while (c != '\0' && i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) -1){
@@ -73,6 +73,9 @@ int main(int argc, char * argv[]){
 		} else {
 			line[j] = '\0';
 			file_check = process_line(char_count, line_count, line);
+			if (file_check == 0){
+				error = -1;
+			}
 			j = 0;
 			char_count = 0;
 			line_count++;
@@ -96,8 +99,8 @@ int main(int argc, char * argv[]){
 		printf("val2: %i  \n", mcode[i].val2);
 		
 	}
-		
-	printf("\nEnd. ErrorCode: %i\n", file_check);
+	
+	(error == 0) ? printf("\nExitCode: OK\n") : printf("\nExitCode: ERROR\n");
 	
 	
 	if ((argc == 2 && strcmp(argv[1], "--help") == 0) || (strcmp(argv[1], "-h") == 0)){
@@ -204,7 +207,7 @@ int process_line(int char_count, int line_count, char line[]){
 				
 				
 			} else if (i == 0){
-				printf("Invalid programm code in line: %i.\n", line_count);
+				printf("\nInvalid programm code in line: %i.\n", line_count + 1);
 				return 0;
 			}
 			
@@ -236,7 +239,7 @@ int process_line(int char_count, int line_count, char line[]){
 					if (strcmp(temp_line.command, v_coms[k].command) == 0){
 						break;
 					} else if ((strcmp(temp_line.command, v_coms[k].command) != 0) && (k == 10)) {
-						printf("Invalid command in line: %i\n", line_count + 1);
+						printf("\nInvalid command in line: %i\n", line_count + 1);
 						return 0;
 					}
 				}
@@ -309,7 +312,7 @@ int process_line(int char_count, int line_count, char line[]){
 				
 				} else {
 					temp_line.type2 = '0';
-					temp_line.val2 = 0;
+					temp_line.val2 = -1;
 				}
 				
 				
