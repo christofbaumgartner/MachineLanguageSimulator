@@ -33,7 +33,7 @@ int sum_array(char sline[]);
 int main(int argc, char * argv[]){
 	
 	
-	int i = 0, j = 0, k = 0, char_count = 0, file_check, line_count = 0;
+	int i = 0, j = 0, k = 0, char_count = 0, file_check = 1, line_count = 0;
 	char c;
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
@@ -118,8 +118,27 @@ int main(int argc, char * argv[]){
 
 int process_line(int char_count, int line_count, char line[]){
 	
+	/* to verify commands: */
+	struct coms {
+		char command[12];
+	};
+	
+	struct coms v_coms[11] = {
+		{"INIT"},
+		{"ADD"},
+		{"SUB"},
+		{"DECREMENT"},
+		{"DECREMENT0"},
+		{"INCREMENT"},
+		{"INCREMENT0"},
+		{"JUMP"},
+		{"JUMP0"},
+		{"RETURN"},
+		{"RETURN0"}
+	};
+	
 
-	int i, j = 1, k, l, div_count = 0;
+	int i, j = 1, k = 0, l, div_count = 0;
 	char command[MAX_ADDRESS_CONTENT];
 	char temp[MAX_ADDRESS_CONTENT];
 	struct mcode_line temp_line;
@@ -132,7 +151,7 @@ int process_line(int char_count, int line_count, char line[]){
 			if ((i == 0) && (line[i] == 'P' || line[i] == 'p')){	
 				temp_line.iscommand = 1;
 				temp_line.regtype = 'P';
-				while(line[j] != 32 && line[j] != 9){	
+				while(line[j] != 32 && line[j] != 9 && line[j] != 44){	
 					temp[j - 1] = line[j];
 					j++;
 				}
@@ -143,51 +162,72 @@ int process_line(int char_count, int line_count, char line[]){
 			} else if ((i == 0) && (line[i] == 'D' || line[i] == 'd')){	
 				temp_line.iscommand = 0;
 				temp_line.regtype = 'D';
-				printf("D");
 				strcpy(temp_line.command, "0");
 				temp_line.step = -1;
-				while(line[j] != 32 && line[j] != 9){	
+				while(line[j] != 32 && line[j] != 9 && line[j] != 44){	
 					temp[j - 1] = line[j];
 					j++;
 				} 
 				temp[j - 1] = '\0';
+				temp_line.type1 = '0';
 				temp_line.val1 = sum_array(temp);
-				div_count++;
+				j++;
+				l = 0;
+				while(line[j] != 32 && line[j] != 9 && line[j] != 44){	
+					temp[l] = line[j];
+					j++;
+					l++;
+				} 
+				temp[j - 1] = '\0';
+				temp_line.type2 = '0';
+				temp_line.val2 = sum_array(temp);
+				
+				
 								
 			} else if ((i == 0) && (line[i] == 'S' || line[i] == 's')){	
 				temp_line.iscommand = 0;
 				temp_line.regtype = 'S';
-				printf("S");
 				strcpy(temp_line.command, "0");
 				temp_line.step = -1;
-				while(line[j] != 32 && line[j] != 9){	
+				while(line[j] != 32 && line[j] != 9 && line[j] != 44){	
 					temp[j - 1] = line[j];
 					j++;
 				} 
 				temp[j - 1] = '\0';
+				temp_line.type1 = '0';
 				temp_line.val1 = sum_array(temp);
-				div_count++;
+				j++;
+				l = 0;
+				while(line[j] != 32 && line[j] != 9 && line[j] != 44){	
+					temp[l] = line[j];
+					j++;
+					l++;
+				} 
+				temp[j - 1] = '\0';
+				temp_line.type2 = '0';
+				temp_line.val2 = sum_array(temp);
 				
 				
-			} /* else {
-				printf("Invalid programm code in line: %i. Aborting.\n", line_count);
+			} else if (i == 0){
+				printf("Invalid programm code in line: %i.\n", line_count);
 				return 0;
-			}*/
+			}
 			
 						
 			if ((temp_line.iscommand == 1) && (div_count == 1)){
 				
 				for (l = 0; l < div_count; l++){
 					j = 0;
-					while(line[j] != 32 && line[j] != 9){
+					while(line[j] != 32 && line[j] != 9 && line[j] != 44){
 						j++;
 					}
 					j++;
 				}
 				
+				div_count++;
 				k = 0;
 				
-				while(line[j] != 32 && line[j] != 9){
+				while(line[j] != 32 && line[j] != 9 && line[j] != 44){
 					command[k] = line[j];
 					k++;
 					j++;
@@ -195,26 +235,104 @@ int process_line(int char_count, int line_count, char line[]){
 				command[k] = '\0';
 												
 				strncpy(temp_line.command, command, MAX_ADDRESS_CONTENT); 
-				div_count++;
+				
+				
+				for (k = 0; k < 11; k++){
+					if (strcmp(temp_line.command, v_coms[k].command) == 0){
+						break;
+					} else if ((strcmp(temp_line.command, v_coms[k].command) != 0) && (k == 10)) {
+						printf("Invalid command in line: %i\n", line_count + 1);
+						return 0;
+					}
+				}
+				
+				
 			}
-		
+			
 			if ((temp_line.iscommand == 1) && (div_count == 2)){
+				j = 0;
 				
 				for (l = 0; l < div_count; l++){
-					j = 0;
-					while(line[j] != 32 && line[j] != 9){
+					while(line[j] != 32 && line[j] != 9 && line[j] != 44){
 						j++;
 					}
 					j++;
 				}
+						
+				
+				if ((line[j] == 'P' || line[j] == 'p')){	
+					temp_line.type1 = 'P';
 					
-			
+										
+				} else if ((line[j] == 'D' || line[j] == 'd')){	
+					temp_line.type1 = 'D';
+									
+								
+				} else if ((line[j] == 'S' || line[j] == 's')){	
+					temp_line.type1 = 'S';
+					
+				} else {
+					printf("FAIL: %c\n", line[j]);
+				}
+				
+				/*printf("pos: %i, j: %i ", pos, j);*/
+				
+				k = 0;
+				while(line[j] != 32 && line[j] != 9 && line[j] != 44 && line[j] != '\0'){	
+					temp[k] = line[j + 1];
+					j++;
+					k++;
+				}
+				temp[k] = '\0';
+				temp_line.val1 = sum_array(temp);
+				div_count++;
 			}
+			
+			if ((temp_line.iscommand == 1) && (div_count == 3)){
+				j = 0;
+				
+				for (l = 0; l < div_count; l++){
+					while(line[j] != 32 && line[j] != 9 && line[j] != 44){
+						j++;
+					}
+					j++;
+				}
+							
+				
+				if ((line[j] == 'P' || line[j] == 'p')){	
+					temp_line.type2 = 'P';
+					
+										
+				} else if ((line[j] == 'D' || line[j] == 'd')){	
+					temp_line.type2 = 'D';
+									
+								
+				} else if ((line[j] == 'S' || line[j] == 's')){	
+					temp_line.type2 = 'S';
+					
+				
+				} else {
+					temp_line.type2 = '0';
+					temp_line.val2 = 0;
+				}
+				
+				/*printf("pos: %i, j: %i ", pos, j);*/
+				
+				k = 0;
+				while(line[j] != 32 && line[j] != 9 && line[j] != 44 && line[j] != '\0'){	
+					temp[k] = line[j + 1];
+					j++;
+					k++;
+				}
+				temp[k] = '\0';
+				temp_line.val2= sum_array(temp);
+				div_count++;
+			}
+			
+			
 			
 		} else if (line[i] =='\0' && line[i + 1] == '\0'){ 
 
-			printf("\nParse line done.\n");
-			
 			/* debug start */
 			printf("Line: %i\t", line_count + 1);
 			printf("RegType: %c\t", temp_line.regtype);
@@ -245,14 +363,18 @@ int sum_array(char line[]){
 	
 	int i = 0, sum = 0, factor = 1;
 	
-	while (line[i] > 47 && line[i] < 58 && line[i] != '\0'){
-		sum = sum * factor + ((line[i] - 48));
-		if (factor == 1){
-			factor = 10;
+	if (line[i] > 47 && line[i] < 58 && line[i] != '\0'){
+		while (line[i] > 47 && line[i] < 58 && line[i] != '\0'){
+			sum = sum * factor + ((line[i] - 48));
+			if (factor == 1){
+				factor = 10;
+			}
+			i++;
 		}
-		i++;
+	
+		return sum;
+		
+	} else {
+		return -1;
 	}
-	
-	return sum;
-	
 }
