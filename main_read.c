@@ -101,6 +101,22 @@ int main(int argc, char * argv[]){
 		}
 	}
 	/* DEBUG END*/
+	
+	printf("mcode:\n");
+	
+	for (i = 0; i < line_count; i++){
+		
+		printf("Line: %i \t", i + 1);
+		printf("RegType: %c\t", mcode[i].regtype);
+		printf("IsCommand: %i\t", mcode[i].iscommand);
+		printf("step: %i \t", mcode[i].step);
+		printf("command: %s       \t", mcode[i].command);
+		printf("type1: %c\t", mcode[i].type1);
+		printf("val1: %i  \t", mcode[i].val1);
+		printf("type2: %c\t", mcode[i].type2);
+		printf("val2: %i  \n", mcode[i].val2);
+		
+	}
 		
 	printf("\nEnd. Marker 5\n");
 	
