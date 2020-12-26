@@ -33,14 +33,14 @@ int sum_array(char sline[]);
 int main(int argc, char * argv[]){
 	
 	
-	int i = 0, j = 0, k = 0, char_count = 0, file_check = 1, line_count = 0;
+	int i = 0, j = 0, char_count = 0, file_check = 1, line_count = 0;
 	char c;
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
 		
 		
 	i = 0;
-	printf("Enter your pseudo machine code. Type '!' when done.\n\n");
+	printf("Enter your pseudo machine code or '--help'. Type '!' when done.\n\n");
 	
 	c = getchar();
 	while (c != '\0' && i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) -1){
@@ -52,19 +52,15 @@ int main(int argc, char * argv[]){
 		}
 	}
 	
-	printf("Print back input. Marker 2\n");
+	printf("Your code input: \n\n");
 	
-	/* DEBUG START: Print back Code*/
+	/*Print back Code Input*/
 	for (i = 0; i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) - 1; i++){
 		if (cmdline_input[i] != '\0'){
 			printf("%c", cmdline_input[i]);
 		} 
 	}
-	/* DEBUG END*/
 	
-	
-	printf("Split line. Marker 3\n");
-
 	
 
 	/* Split to single lines and process */
@@ -73,8 +69,7 @@ int main(int argc, char * argv[]){
 			line[j] = cmdline_input[i];
 			char_count++;
 			j++;
-		/*} else if (cmdline_input[i] == '\0' && cmdline_input[i + 1] == '\0'){ 
-			break;*/
+		
 		} else {
 			line[j] = '\0';
 			file_check = process_line(char_count, line_count, line);
@@ -85,24 +80,8 @@ int main(int argc, char * argv[]){
 		
 	}
 	
-	
-	
-	printf("\nParse line: %i. Marker 4\n", file_check);
-	/* printf("mcode.step = %d.\n", mcode[line_count].step); */
-	
-	/* DEBUG START: Print back line */ 
-	for (k = 0; k < (MAX_INPUT_LINE_LENGTH) - 1; k++){
-		if (line[k] != '\0'){
-			printf("%c", line[k]);
-		} else if (line[k] =='\0' && line[k + 1] == '\0'){ 
-			break;
-		} else {
-			printf("\n");
-		}
-	}
-	/* DEBUG END*/
-	
-	printf("mcode:\n");
+		
+	printf("\nMACHINE CODE:\n\n");
 	
 	for (i = 0; i < line_count; i++){
 		
@@ -118,7 +97,7 @@ int main(int argc, char * argv[]){
 		
 	}
 		
-	printf("\nEnd. Marker 5\n");
+	printf("\nEnd. ErrorCode: %i\n", file_check);
 	
 	
 	if ((argc == 2 && strcmp(argv[1], "--help") == 0) || (strcmp(argv[1], "-h") == 0)){
@@ -288,10 +267,11 @@ int process_line(int char_count, int line_count, char line[]){
 					temp_line.type1 = 'S';
 					
 				} else {
-					printf("FAIL: %c\n", line[j]);
+					printf("Invalid programm code in line: %i.\n", line_count);
+					return 0;
 				}
 				
-				/*printf("pos: %i, j: %i ", pos, j);*/
+				
 				
 				k = 0;
 				while(line[j] != 32 && line[j] != 9 && line[j] != 44 && line[j] != '\0'){	
@@ -332,7 +312,6 @@ int process_line(int char_count, int line_count, char line[]){
 					temp_line.val2 = 0;
 				}
 				
-				/*printf("pos: %i, j: %i ", pos, j);*/
 				
 				k = 0;
 				while(line[j] != 32 && line[j] != 9 && line[j] != 44 && line[j] != '\0'){	
@@ -349,7 +328,7 @@ int process_line(int char_count, int line_count, char line[]){
 			
 		} else if (line[i] =='\0' && line[i + 1] == '\0'){ 
 
-			/* debug start */
+			/* DEBUG START: Shows Error in Lines 
 			printf("Line: %i\t", line_count + 1);
 			printf("RegType: %c\t", temp_line.regtype);
 			printf("IsC: %i\t", temp_line.iscommand);
@@ -359,7 +338,7 @@ int process_line(int char_count, int line_count, char line[]){
 			printf("val1: %i\t", temp_line.val1);
 			printf("type2: %c\t", temp_line.type2);
 			printf("val2: %i\n", temp_line.val2);
-			/* debug end */
+			DEBUG END */
 						
 			mcode[line_count] = temp_line;
 			return 1;
