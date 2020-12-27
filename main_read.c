@@ -38,13 +38,36 @@ int main(int argc, char * argv[]){
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
 		
+	if ((argc == 2) && ((strcmp(argv[1], "--help") == 0) || (strcmp(argv[1], "-h") == 0))){
+		help:
+			printf("\n Help:\n\n Type your pseudo machine code or pass a file like this: %s.exe < yourcode.mc\n\n Valid commands are:\n\n", argv[0]);
+			printf(" INIT      \tA\tStore value 0 at address A.\n");
+			printf(" ADD       \tA,B\tAdd to memory address A the value of memory address B.\n");
+			printf(" SUB       \tA,B\tSubstract from memory address A the value of memory address B.\n");
+			printf(" DECREMENT \tA\tDecrease the value of memory address A by 1.\n");
+			printf(" DECREMENT0\tA,B\tDecrease the value of memory address A by 1 in case value of memory address B equals 0.\n");
+			printf(" INCREMENT \tA\tIncrease the value of memory address A by 1.\n");
+			printf(" INCREMENT0\tA,B\tIncrease the value of memory address A by 1 in case value of memory address B equals 0.\n");	
+			printf(" JUMP      \tA\tJump to program pointer A.\n");
+			printf(" JUMP0     \tA,B\tJump to program pointer A in case value of memory address B equals 0.\n");
+			printf(" RETURN    \tA\tReturn value of memory address A.\n");
+			printf(" RETURN0   \tA,B\tReturn value of memory address A in case value of memory address B equals 0.\n\n");
+			printf(" PROGRAM address has the format Px while 'x' is the line number.\n DATA address has the format Dx while 'x' is the line number.\n"); 
+			printf(" STACK address has the format Sx while 'x' is the line number.\n HEAP address has the format Hx while 'x' is the line number.\n\n");
+			printf(" Separation either by 'Space', 'Tab' or ','.\n\n");
+			printf(" Example code:\n\n P1\tINIT     \tS2\n P2\tINCREMENT \tS2\n P3\tJUMP0   \tP7,S1\n P4\tADD     \tS2,S2\n P5\tDECREMENT\tS1\n P6\tJUMP    \tP3\n P7\tRETURN  \tS2\n S1\t2\n S2\n");
+			return 0;
+	}
 		
 	i = 0;
-	printf("\nEnter your pseudo machine code or '--help'. Type '!' when done.\n\n");
-	
+	printf("\nEnter your pseudo machine code or '?' for help. Type '!' when done.\n\n");
 	c = getchar();
+	
 	while (c != '\0' && i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) -1){
-		if (c != '\0' && c != EOF && c != '!'){
+		if(c == '?'){
+			goto help;
+		
+		} else if (c != '\0' && c != EOF && c != '!'){
 			cmdline_input[i++] = c;
 			c = getchar();
 		} else {
@@ -101,13 +124,6 @@ int main(int argc, char * argv[]){
 	}
 	
 	(error == 0) ? printf("\nExitCode: OK\n") : printf("\nExitCode: ERROR\n");
-	
-	
-	if ((argc == 2 && strcmp(argv[1], "--help") == 0) || (strcmp(argv[1], "-h") == 0)){
-		printf("\n Help:\n\n Pass your pseudo machine code file: %s.exe < yourcode.mc\n\n An example for pseudo code is:\n\n", argv[0]);
-		printf(" P1 INIT \tS2\n P2 INCREMENT \tS2\n P3 JUMP0 \tP7,S1\n P4 ADD \tS2,S2\n P5 DECREMENT \tS1\n P6 JUMP \tP3\n P7 RETURN \tS2\n S1 \t\t2\n S2\n");
-		return 0;
-	}
 	
 	return 0;
 	
@@ -180,11 +196,34 @@ int process_line(int char_count, int line_count, char line[]){
 				temp_line.type2 = '0';
 				temp_line.val2 = sum_array(temp);
 				
-				
-								
 			} else if ((i == 0) && (line[i] == 'S' || line[i] == 's')){	
 				temp_line.iscommand = 0;
 				temp_line.regtype = 'S';
+				strcpy(temp_line.command, "0");
+				temp_line.step = -1;
+				while(line[j] != 32 && line[j] != 9 && line[j] != 44){	
+					temp[j - 1] = line[j];
+					j++;
+				} 
+				temp[j - 1] = '\0';
+				temp_line.type1 = '0';
+				temp_line.val1 = sum_array(temp);
+				j++;
+				l = 0;
+				while(line[j] != 32 && line[j] != 9 && line[j] != 44){	
+					temp[l] = line[j];
+					j++;
+					l++;
+				} 
+				temp[j - 1] = '\0';
+				temp_line.type2 = '0';
+				temp_line.val2 = sum_array(temp);
+				
+					
+								
+			} else if ((i == 0) && (line[i] == 'H' || line[i] == 'h')){	
+				temp_line.iscommand = 0;
+				temp_line.regtype = 'H';
 				strcpy(temp_line.command, "0");
 				temp_line.step = -1;
 				while(line[j] != 32 && line[j] != 9 && line[j] != 44){	
@@ -259,15 +298,16 @@ int process_line(int char_count, int line_count, char line[]){
 						
 				
 				if ((line[j] == 'P' || line[j] == 'p')){	
-					temp_line.type1 = 'P';
-					
+					temp_line.type1 = 'P';			
 										
 				} else if ((line[j] == 'D' || line[j] == 'd')){	
 					temp_line.type1 = 'D';
-									
-								
+				
 				} else if ((line[j] == 'S' || line[j] == 's')){	
 					temp_line.type1 = 'S';
+									
+				} else if ((line[j] == 'H' || line[j] == 'h')){	
+					temp_line.type1 = 'H';
 					
 				} else {
 					printf("Invalid programm code in line: %i.\n", line_count);
@@ -296,19 +336,19 @@ int process_line(int char_count, int line_count, char line[]){
 					}
 					j++;
 				}
-							
+				
 				
 				if ((line[j] == 'P' || line[j] == 'p')){	
 					temp_line.type2 = 'P';
 					
-										
 				} else if ((line[j] == 'D' || line[j] == 'd')){	
 					temp_line.type2 = 'D';
-									
-								
+					
 				} else if ((line[j] == 'S' || line[j] == 's')){	
 					temp_line.type2 = 'S';
-					
+				
+				} else if ((line[j] == 'H' || line[j] == 'h')){	
+					temp_line.type2 = 'H';				
 				
 				} else {
 					temp_line.type2 = '0';
