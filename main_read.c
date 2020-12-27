@@ -115,7 +115,7 @@ int main(int argc, char * argv[]){
 		printf("RegType: %c\t", mcode[i].regtype);
 		printf("IsCommand: %i\t", mcode[i].iscommand);
 		printf("step: %i \t", mcode[i].step);
-		printf("command: %s       \t", mcode[i].command);
+		printf("command: %s      \t", mcode[i].command);
 		printf("type1: %c\t", mcode[i].type1);
 		printf("val1: %i  \t", mcode[i].val1);
 		printf("type2: %c\t", mcode[i].type2);
@@ -161,6 +161,8 @@ int process_line(int char_count, int line_count, char line[]){
 	
 	for (i = 0; i < (MAX_INPUT_LINE_LENGTH) - 1; i++){
 		if (line[i] != '\0' && i < char_count){
+			
+			/* Check first charakter to determine if program or memory */
 			
 			if ((i == 0) && (line[i] == 'P' || line[i] == 'p')){	
 				temp_line.iscommand = 1;
@@ -250,6 +252,7 @@ int process_line(int char_count, int line_count, char line[]){
 				return 0;
 			}
 			
+			/* extract command */
 						
 			if ((temp_line.iscommand == 1) && (div_count == 1)){
 				
@@ -273,6 +276,7 @@ int process_line(int char_count, int line_count, char line[]){
 												
 				strncpy(temp_line.command, command, MAX_ADDRESS_CONTENT); 
 				
+				/* verify if command is valid */
 				
 				for (k = 0; k < 11; k++){
 					if (strcmp(temp_line.command, v_coms[k].command) == 0){
@@ -285,6 +289,8 @@ int process_line(int char_count, int line_count, char line[]){
 				
 				
 			}
+			
+			/* extract type and value 1 */ 
 			
 			if ((temp_line.iscommand == 1) && (div_count == 2)){
 				j = 0;
@@ -315,7 +321,6 @@ int process_line(int char_count, int line_count, char line[]){
 				}
 				
 				
-				
 				k = 0;
 				while(line[j] != 32 && line[j] != 9 && line[j] != 44 && line[j] != '\0'){	
 					temp[k] = line[j + 1];
@@ -326,6 +331,8 @@ int process_line(int char_count, int line_count, char line[]){
 				temp_line.val1 = sum_array(temp);
 				div_count++;
 			}
+			
+			/* extract type and value 2 */ 
 			
 			if ((temp_line.iscommand == 1) && (div_count == 3)){
 				j = 0;
@@ -366,8 +373,7 @@ int process_line(int char_count, int line_count, char line[]){
 				temp_line.val2= sum_array(temp);
 				div_count++;
 			}
-			
-			
+		
 			
 		} else if (line[i] =='\0' && line[i + 1] == '\0'){ 
 
@@ -391,9 +397,6 @@ int process_line(int char_count, int line_count, char line[]){
 	return 0;
 	
 }
-
-	
-	
 
 
 
