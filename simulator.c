@@ -2,6 +2,21 @@
 #include "types.h"
 #include "config.h"
 
+int execute_program_line();
+int init(char register_type, int register_number);
+int add(char register_type_1, int register_number_1, char register_type_2, int register_number_2);
+int sub(char register_type_1, int register_number_1, char register_type_2, int register_number_2);
+int decrement(char register_type, int register_number);
+int cond_decrement(char decr_register_type, int decr_register_number, char cond_register_type, int cond_register_number);
+int increment(char register_type, int register_number);
+int cond_increment(char incr_register_type, int incr_register_number, char cond_register_type, int cond_register_number);
+int jump(char register_type, int register_number);
+int cond_jump(char jump_register_type, int jump_register_number, char cond_register_type, int cond_register_number);
+int return_n(char return_register_type, int return_register_number);
+int cond_return_n(char return_register_type, int return_register_number, char cond_register_type, int cond_register_number);
+int write_value(char register_type, int register_number, int value);
+int get_value(char register_type, int register_number);
+
 extern struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 
 /* 	Starts and controls the excecution of the program
@@ -72,46 +87,57 @@ int execute_program_line(struct mcode_line* code_line)
 
 	if(strcmp((*code_line).command, "INIT") == 0 )
 	{
+		int status = init((*code_line).type1, (*code_line).val1);
 		printf("Executed INIT\n");
 	}
 	else if(strcmp((*code_line).command, "ADD") == 0 )
 	{
+		int status = add((*code_line).type1, (*code_line).val1, (*code_line).type2, (*code_line).val2);
 		printf("Executed ADD\n");
 	}
 	else if(strcmp((*code_line).command, "SUB") == 0 )
 	{
+		int status = sub((*code_line).type1, (*code_line).val1, (*code_line).type2, (*code_line).val2);
 		printf("Executed SUB\n");
 	}
 	else if(strcmp((*code_line).command, "DECREMENT") == 0 )
 	{
+		int status = decrement((*code_line).type1, (*code_line).val1);
 		printf("Executed DECREMENT\n");
 	}
 	else if(strcmp((*code_line).command, "DECREMENT0") == 0 )
 	{
+		int status = cond_decrement((*code_line).type1, (*code_line).val1, (*code_line).type2, (*code_line).val2);
 		printf("Executed DECREMENT0\n");
 	}
 	else if(strcmp((*code_line).command, "INCREMENT") == 0 )
 	{
+		int status = increment((*code_line).type1, (*code_line).val1);
 		printf("Executed INCREMENT\n");
 	}
 	else if(strcmp((*code_line).command, "INCREMENT0") == 0 )
 	{
+		int status = cond_increment((*code_line).type1, (*code_line).val1, (*code_line).type2, (*code_line).val2);
 		printf("Executed INCREMENT0\n");
 	}
 	else if(strcmp((*code_line).command, "JUMP") == 0 )
 	{
+		int status = jump((*code_line).type1, (*code_line).val1);
 		printf("Executed JUMP\n");
 	}
 	else if(strcmp((*code_line).command, "JUMP0") == 0 )
 	{
+		int status = cond_jump((*code_line).type1, (*code_line).val1, (*code_line).type2, (*code_line).val2);
 		printf("Executed JUMP0\n");
 	}
 	else if(strcmp((*code_line).command, "RETURN") == 0 )
 	{
+		int status = return_n((*code_line).type1, (*code_line).val1);
 		printf("Executed RETURN\n");
 	}
 	else if(strcmp((*code_line).command, "RETURN0") == 0 )
 	{
+		int status = cond_return_n((*code_line).type1, (*code_line).val1, (*code_line).type2, (*code_line).val2);
 		printf("Executed RETURN0\n");
 	}
 	else
@@ -120,5 +146,71 @@ int execute_program_line(struct mcode_line* code_line)
 		return 1;
 	}
 	
+	return 0;
+}
+
+int init(char register_type, int register_number)
+{
+	return 0;
+}
+
+int add(char register_type_1, int register_number_1, char register_type_2, int register_number_2)
+{
+	return 0;
+}
+
+int sub(char register_type_1, int register_number_1, char register_type_2, int register_number_2)
+{
+	return 0;
+}
+
+int decrement(char register_type, int register_number)
+{
+	return 0;
+}
+
+int cond_decrement(char decr_register_type, int decr_register_number, char cond_register_type, int cond_register_number)
+{
+	return 0;
+}
+
+int increment(char register_type, int register_number)
+{
+	return 0;
+}
+
+int cond_increment(char incr_register_type, int incr_register_number, char cond_register_type, int cond_register_number)
+{
+	return 0;
+}
+
+int jump(char register_type, int register_number)
+{
+	return 0;
+}
+
+int cond_jump(char jump_register_type, int jump_register_number, char cond_register_type, int cond_register_number)
+{
+	return 0;
+}
+
+int return_n(char return_register_type, int return_register_number)
+{
+	return 0;
+}
+
+int cond_return_n(char return_register_type, int return_register_number, char cond_register_type, int cond_register_number)
+{
+	return 0;
+}
+
+
+int write_value(char register_type, int register_number, int value)
+{
+	return 0;
+}
+
+int get_value(char register_type, int register_number)
+{
 	return 0;
 }

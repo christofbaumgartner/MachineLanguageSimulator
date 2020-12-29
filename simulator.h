@@ -5,6 +5,5 @@
 #include <string.h>
 
 int execute_program();
-int execute_program_line();
 
 #endif
