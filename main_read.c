@@ -123,10 +123,6 @@ int main(int argc, char * argv[]){
 	}
 	
 	fill_mem_array(stack, 'S', line_count);
-	
-	for (i = 0; i < (get_mem_size('S', line_count)); i++){
-		printf("S%i: %i\n", i + 1, stack[i]);
-	}
 		
 
 	/* data */
@@ -139,11 +135,7 @@ int main(int argc, char * argv[]){
 	}
 	
 	fill_mem_array(data, 'D', line_count);
-	
-	for (i = 0; i < (get_mem_size('D', line_count)); i++){
-		printf("D%i: %i\n", i + 1, data[i]);
-	}
-		
+
 	
 	/* heap */
 	
@@ -155,16 +147,24 @@ int main(int argc, char * argv[]){
 	}
 	
 	fill_mem_array(heap, 'H', line_count);
-	
-	for (i = 0; i < (get_mem_size('H', line_count)); i++){
-		printf("H%i: %i\n", i + 1, heap[i]);
-	}
 
 	
 	/* print back processing of mcode */
 
 	printf("\nAUSFUEHRUNG:\n\n");
 	execute_program();
+
+	for (i = 0; i < (get_mem_size('H', line_count)); i++){
+		printf("H%i: %i\n", i + 1, heap[i]);
+	}
+		
+	for (i = 0; i < (get_mem_size('D', line_count)); i++){
+		printf("D%i: %i\n", i + 1, data[i]);
+	}
+
+	for (i = 0; i < (get_mem_size('S', line_count)); i++){
+		printf("S%i: %i\n", i + 1, stack[i]);
+	}
 
 	
 	free(heap);

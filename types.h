@@ -14,4 +14,6 @@ struct mcode_line{
 		int val2;
 	};
 
+extern int *stack, *data, *heap;
+
 #endif
