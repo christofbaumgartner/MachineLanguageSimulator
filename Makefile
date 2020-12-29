@@ -1,11 +1,11 @@
 CC=gcc 
 CFLAGS = -ansi -pedantic -Wall -Wextra
 
-program: main.o interpreter.o
-	$(CC) -o program main.o interpreter.o $(CFLAGS)
+program: main_read.o simulator.o
+	$(CC) -o program main_read.o simulator.o $(CFLAGS)
 
-main.o: main.c
-	$(CC) -c main.c $(CFLAGS)
+main_read.o: main_read.c
+	$(CC) -c main_read.c $(CFLAGS)
 
-interpreter.o: interpreter.c
-	$(CC) -c interpreter.c $(CFLAGS)
+interpreter.o: simulator.c
+	$(CC) -c simulator.c $(CFLAGS)
