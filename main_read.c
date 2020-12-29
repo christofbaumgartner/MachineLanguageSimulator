@@ -27,17 +27,22 @@ struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 
 int process_line(int char_count, int line_count, char line[]);
 int sum_array(char sline[]);
-
+int get_mem_size(char mtype, int line_count); 
+void fill_mem_array(int array[], char mtype, int line_count);
 
 
 int main(int argc, char * argv[]){
 	
 	
 	int i = 0, j = 0, char_count = 0, file_check = 1, line_count = 0, error = 0;
+	int *stack, *data, *heap;
 	char c;
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
-		
+	
+
+	/* help section */
+	
 	if ((argc == 2) && ((strcmp(argv[1], "--help") == 0) || (strcmp(argv[1], "-h") == 0))){
 		help:
 			printf("\n Help:\n\n Type your pseudo machine code or pass a file like this: %s.exe < yourcode.mc\n\n Valid commands are:\n\n", argv[0]);
@@ -62,6 +67,8 @@ int main(int argc, char * argv[]){
 	i = 0;
 	printf("\nEnter your pseudo machine code or '?' for help. Type '!' when done.\n\n");
 	c = getchar();
+	
+	/* get input from stdin */
 	
 	while (c != '\0' && i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) -1){
 		if(c == '?'){
@@ -106,7 +113,9 @@ int main(int argc, char * argv[]){
 		
 	}
 	
-		
+
+	/* print back processed mcode */
+	
 	printf("\nMACHINE CODE:\n\n");
 	
 	for (i = 0; i < line_count; i++){
@@ -124,6 +133,62 @@ int main(int argc, char * argv[]){
 	}
 	
 	(error == 0) ? printf("\nExitCode: OK\n") : printf("\nExitCode: ERROR\n");
+	
+	
+	/* fill stack, data and heap arrays from mcode[]*/
+	
+	/* stack */
+	stack = malloc(get_mem_size('S', line_count) * sizeof(int));
+	
+	if (stack == NULL) {
+		printf("Memory could not be allocated.");
+		return 1;
+	}
+	
+	fill_mem_array(stack, 'S', line_count);
+	
+	for (i = 0; i < (get_mem_size('S', line_count)); i++){
+		printf("S%i: %i\n", i + 1, stack[i]);
+	}
+		
+	free(stack);
+	
+	
+	/* data */
+	
+	data = malloc(get_mem_size('D', line_count) * sizeof(int));
+	
+	if (data == NULL) {
+		printf("Memory could not be allocated.");
+		return 1;
+	}
+	
+	fill_mem_array(data, 'D', line_count);
+	
+	for (i = 0; i < (get_mem_size('D', line_count)); i++){
+		printf("D%i: %i\n", i + 1, data[i]);
+	}
+		
+	free(data);
+	
+	
+	/* heap */
+	
+	heap = malloc(get_mem_size('H', line_count) * sizeof(int));
+	
+	if (heap == NULL) {
+		printf("Memory could not be allocated.");
+		return 1;
+	}
+	
+	fill_mem_array(heap, 'H', line_count);
+	
+	for (i = 0; i < (get_mem_size('H', line_count)); i++){
+		printf("H%i: %i\n", i + 1, heap[i]);
+	}
+	
+	
+	free(heap);
 	
 	return 0;
 	
@@ -399,7 +464,6 @@ int process_line(int char_count, int line_count, char line[]){
 }
 
 
-
 int sum_array(char line[]){
 	
 	int i = 0, sum = 0, factor = 1;
@@ -418,4 +482,32 @@ int sum_array(char line[]){
 	} else {
 		return -1;
 	}
+}
+
+
+int get_mem_size(char mtype, int line_count){
+	
+	int i;
+	int size = 0;
+	
+	for (i = 0; i < line_count; i++){
+		if (mcode[i].regtype == mtype){
+			size++;
+		}
+	} 
+	
+	return size;
+}
+
+
+void fill_mem_array(int array[], char mtype, int line_count){
+	
+	int i;
+		
+	for (i = 0; i < line_count; i++){
+		if (mcode[i].regtype == mtype){
+			array[(mcode[i].val1 - 1)] = mcode[i].val2;
+		}
+	}
+		
 }
