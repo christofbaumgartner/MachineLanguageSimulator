@@ -151,8 +151,7 @@ int main(int argc, char * argv[]){
 	
 	/* print back processing of mcode */
 
-	printf("\nAUSFUEHRUNG:\n\n");
-	execute_program();
+	
 
 	for (i = 0; i < (get_mem_size('H', line_count)); i++){
 		printf("H%i: %i\n", i + 1, heap[i]);
@@ -166,7 +165,9 @@ int main(int argc, char * argv[]){
 		printf("S%i: %i\n", i + 1, stack[i]);
 	}
 
-	
+	printf("\nAUSFUEHRUNG:\n\n");
+	execute_program();
+
 	free(heap);
 	free(stack);
 	free(data);
@@ -448,9 +449,15 @@ int process_line(int char_count, int line_count, char line[]){
 
 int sum_array(char line[]){
 	
-	int i = 0, sum = 0, factor = 1;
+	int i = 0, sum = 0, factor = 1, vz = 1;
+	
+	if (line[i] == 45){
+		vz = -1;
+		i++;
+	}
 	
 	if (line[i] > 47 && line[i] < 58 && line[i] != '\0'){
+		
 		while (line[i] > 47 && line[i] < 58 && line[i] != '\0'){
 			sum = sum * factor + ((line[i] - 48));
 			if (factor == 1){
@@ -459,10 +466,11 @@ int sum_array(char line[]){
 			i++;
 		}
 	
-		return sum;
+		return sum * vz;
 		
 	} else {
-		return -1;
+		printf("%i", INT_MIN);
+		return INT_MIN;
 	}
 }
 
