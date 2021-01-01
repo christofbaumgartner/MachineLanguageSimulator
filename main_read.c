@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "config.h"
 #include "types.h"
 #include "simulator.h"
@@ -212,7 +213,7 @@ int process_line(int char_count, int line_count, char line[]){
 			
 			/* Check first charakter to determine if program or memory */
 			
-			if ((i == 0) && (line[i] == 'P' || line[i] == 'p')){	
+			if ((i == 0) && toupper(line[i]) == 'P'){	
 				temp_line.iscommand = 1;
 				temp_line.regtype = 'P';
 				while(line[j] != 32 && line[j] != 9 && line[j] != 44){	
@@ -223,7 +224,7 @@ int process_line(int char_count, int line_count, char line[]){
 				temp_line.step = sum_array(temp);
 				div_count++;
 										
-			} else if ((i == 0) && (line[i] == 'D' || line[i] == 'd')){	
+			} else if ((i == 0) && toupper(line[i]) == 'D'){	
 				temp_line.iscommand = 0;
 				temp_line.regtype = 'D';
 				strcpy(temp_line.command, "0");
@@ -246,7 +247,7 @@ int process_line(int char_count, int line_count, char line[]){
 				temp_line.type2 = '0';
 				temp_line.val2 = sum_array(temp);
 				
-			} else if ((i == 0) && (line[i] == 'S' || line[i] == 's')){	
+			} else if ((i == 0) && toupper(line[i]) == 'S'){	
 				temp_line.iscommand = 0;
 				temp_line.regtype = 'S';
 				strcpy(temp_line.command, "0");
@@ -271,7 +272,7 @@ int process_line(int char_count, int line_count, char line[]){
 				
 					
 								
-			} else if ((i == 0) && (line[i] == 'H' || line[i] == 'h')){	
+			} else if ((i == 0) && toupper(line[i]) == 'H'){	
 				temp_line.iscommand = 0;
 				temp_line.regtype = 'H';
 				strcpy(temp_line.command, "0");
@@ -349,20 +350,9 @@ int process_line(int char_count, int line_count, char line[]){
 					}
 					j++;
 				}
-						
-				
-				if ((line[j] == 'P' || line[j] == 'p')){	
-					temp_line.type1 = 'P';			
-										
-				} else if ((line[j] == 'D' || line[j] == 'd')){	
-					temp_line.type1 = 'D';
-				
-				} else if ((line[j] == 'S' || line[j] == 's')){	
-					temp_line.type1 = 'S';
-									
-				} else if ((line[j] == 'H' || line[j] == 'h')){	
-					temp_line.type1 = 'H';
-					
+
+				if ((toupper(line[j]) == 'P' || toupper(line[j]) == 'D' || toupper(line[j]) == 'S' || toupper(line[j]) == 'H')){	
+					temp_line.type1 = toupper(line[j]);				
 				} else {
 					printf("Invalid programm code in line: %i.\n", line_count);
 					return 0;
@@ -392,19 +382,8 @@ int process_line(int char_count, int line_count, char line[]){
 					j++;
 				}
 				
-				
-				if ((line[j] == 'P' || line[j] == 'p')){	
-					temp_line.type2 = 'P';
-					
-				} else if ((line[j] == 'D' || line[j] == 'd')){	
-					temp_line.type2 = 'D';
-					
-				} else if ((line[j] == 'S' || line[j] == 's')){	
-					temp_line.type2 = 'S';
-				
-				} else if ((line[j] == 'H' || line[j] == 'h')){	
-					temp_line.type2 = 'H';				
-				
+				if ((toupper(line[j]) == 'P' || toupper(line[j]) == 'D' || toupper(line[j]) == 'S' || toupper(line[j]) == 'H')){	
+					temp_line.type2 = toupper(line[i]);	
 				} else {
 					temp_line.type2 = '0';
 					temp_line.val2 = -1;
