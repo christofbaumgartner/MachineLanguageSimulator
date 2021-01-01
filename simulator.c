@@ -1,5 +1,5 @@
 #include "simulator.h"
-#include "types.h"
+#include "global.h"
 #include "config.h"
 
 int execute_program_line();

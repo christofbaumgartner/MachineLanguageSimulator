@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "config.h"
-#include "types.h"
+#include "global.h"
 #include "simulator.h"
 	
 struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
