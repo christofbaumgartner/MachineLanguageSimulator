@@ -20,6 +20,7 @@ int get_value(char register_type, int register_number);
 struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 int *stack, *data, *heap;
 int program_pointer = 1;
+int clock_number = 0;
 
 /* 	Starts and controls the excecution of the program
 		Returns 0 when the complete program excecuted correctly.
@@ -55,13 +56,11 @@ int execute_program()
 			int line_status;
 			printf("Register %c%i wird ausgefuehrt:\n", (*current_code_line).regtype, (*current_code_line).step );
 			line_status = execute_program_line(current_code_line);
+			clock_number++;
 			if(line_status != 0)
 			{
 				printf("Fehler beim ausführen der Zeile: %i\n", program_pointer - 1);
 				return 1;
-			} else {
-				
-				
 			}
 			continue;
 		}
@@ -75,6 +74,7 @@ int execute_program()
 		else
 		{
 			printf("Programm beendeet bei Zeile: %i\n", program_pointer - 1);
+			printf("Benoetigte Takte: %i\n", clock_number);
 			break;
 		}
 	}
