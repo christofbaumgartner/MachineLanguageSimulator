@@ -9,5 +9,7 @@
 #define MAX_ADDRESS_CONTENT 10
 /* Max length for a line of pseudo machine code */
 #define MAX_INPUT_LINE_LENGTH 22
+/* Enables verbose debug logging to the console (0: disabled, 1: enabled) */
+#define VERBOSE_DEBUG_OUTPUT 0
 
 #endif

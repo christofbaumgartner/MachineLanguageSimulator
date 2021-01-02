@@ -14,6 +14,7 @@ struct mcode_line{
 		int val2;
 	};
 
+struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 extern int *stack, *data, *heap;
 
 #endif

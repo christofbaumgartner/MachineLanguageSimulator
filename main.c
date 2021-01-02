@@ -5,6 +5,7 @@
 #include "config.h"
 #include "global.h"
 #include "simulator.h"
+#include "cmd_writer.h"
 	
 struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 int *stack, *data, *heap;
@@ -21,40 +22,20 @@ int main(int argc, char * argv[]){
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
 	
-
-	/* help section */
-	
+	/* check for entered command line parameters */
 	if ((argc == 2) && ((strcmp(argv[1], "--help") == 0) || (strcmp(argv[1], "-h") == 0))){
-		help:
-			printf("\n Help:\n\n Type your pseudo machine code or pass a file like this: %s.exe < yourcode.mc\n\n Valid commands are:\n\n", argv[0]);
-			printf(" INIT      \tA\tStore value 0 at address A.\n");
-			printf(" ADD       \tA,B\tAdd to memory address A the value of memory address B.\n");
-			printf(" SUB       \tA,B\tSubstract from memory address A the value of memory address B.\n");
-			printf(" DECREMENT \tA\tDecrease the value of memory address A by 1.\n");
-			printf(" DECREMENT0\tA,B\tDecrease the value of memory address A by 1 in case value of memory address B equals 0.\n");
-			printf(" INCREMENT \tA\tIncrease the value of memory address A by 1.\n");
-			printf(" INCREMENT0\tA,B\tIncrease the value of memory address A by 1 in case value of memory address B equals 0.\n");	
-			printf(" JUMP      \tA\tJump to program pointer A.\n");
-			printf(" JUMP0     \tA,B\tJump to program pointer A in case value of memory address B equals 0.\n");
-			printf(" RETURN    \tA\tReturn value of memory address A.\n");
-			printf(" RETURN0   \tA,B\tReturn value of memory address A in case value of memory address B equals 0.\n\n");
-			printf(" PROGRAM address has the format Px while 'x' is the line number.\n DATA address has the format Dx while 'x' is the line number.\n"); 
-			printf(" STACK address has the format Sx while 'x' is the line number.\n HEAP address has the format Hx while 'x' is the line number.\n\n");
-			printf(" Separation either by 'Space', 'Tab' or ','.\n\n");
-			printf(" Example code:\n\n P1\tINIT     \tS2\n P2\tINCREMENT \tS2\n P3\tJUMP0   \tP7,S1\n P4\tADD     \tS2,S2\n P5\tDECREMENT\tS1\n P6\tJUMP    \tP3\n P7\tRETURN  \tS2\n S1\t2\n S2\n");
-			return 0;
+		return print_help(argv[0]);
 	}
-		
-	i = 0;
-	printf("\nEnter your pseudo machine code or '?' for help. Type '!' when done.\n\n");
+
+	print_code_promt();
 	c = getchar();
 	
-	/* get input from stdin */
-	
+	/* check input from stdin */
 	while (c != '\0' && i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) -1){
-		if(c == '?'){
-			goto help;
-		
+		if (c == '?'){
+			print_help(argv[0]);
+			c = getchar();
+			print_code_promt();
 		} else if (c != '\0' && c != EOF && c != '!'){
 			cmdline_input[i++] = c;
 			c = getchar();
@@ -63,16 +44,7 @@ int main(int argc, char * argv[]){
 		}
 	}
 	
-	printf("Your code input: \n\n");
-	
-	/*Print back Code Input*/
-	for (i = 0; i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) - 1; i++){
-		if (cmdline_input[i] != '\0'){
-			printf("%c", cmdline_input[i]);
-		} 
-	}
-	
-	
+	print_back_input(cmdline_input);
 
 	/* Split to single lines and process */
 	for (i = 0; i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) - 1; i++){
@@ -91,81 +63,55 @@ int main(int argc, char * argv[]){
 			char_count = 0;
 			line_count++;
 		}
-		
 	}
 	
 
-	/* print back processed mcode */
-	
-	printf("\nMACHINE CODE:\n\n");
-	
-	for (i = 0; i < line_count; i++){
-		
-		printf("Line: %i \t", i + 1);
-		printf("RegType: %c\t", mcode[i].regtype);
-		printf("IsCommand: %i\t", mcode[i].iscommand);
-		printf("step: %i \t", mcode[i].step);
-		printf("command: %s      \t", mcode[i].command);
-		printf("type1: %c\t", mcode[i].type1);
-		printf("val1: %i  \t", mcode[i].val1);
-		printf("type2: %c\t", mcode[i].type2);
-		printf("val2: %i  \n", mcode[i].val2);
+	if(VERBOSE_DEBUG_OUTPUT){
+		/* print back processed mcode */
+		print_structured_code(line_count);
 	}
 	
-	
+
 	/* fill stack, data and heap arrays from mcode[]*/
-	
 	/* stack */
 	stack = malloc(get_mem_size('S', line_count) * sizeof(int));
-	
 	if (stack == NULL) {
 		printf("Memory could not be allocated.");
 		return 1;
 	}
-	
 	fill_mem_array(stack, 'S', line_count);
 		
-
 	/* data */
-	
 	data = malloc(get_mem_size('D', line_count) * sizeof(int));
-	
 	if (data == NULL) {
 		printf("Memory could not be allocated.");
 		return 1;
 	}
-	
 	fill_mem_array(data, 'D', line_count);
-
 	
 	/* heap */
-	
 	heap = malloc(get_mem_size('H', line_count) * sizeof(int));
-	
 	if (heap == NULL) {
 		printf("Memory could not be allocated.");
 		return 1;
 	}
-	
 	fill_mem_array(heap, 'H', line_count);
 
+	if(VERBOSE_DEBUG_OUTPUT){
+		/* print back processing of mcode */
+		for (i = 0; i < (get_mem_size('H', line_count)); i++){
+			printf("H%i: %i\n", i + 1, heap[i]);
+		}
+			
+		for (i = 0; i < (get_mem_size('D', line_count)); i++){
+			printf("D%i: %i\n", i + 1, data[i]);
+		}
+
+		for (i = 0; i < (get_mem_size('S', line_count)); i++){
+			printf("S%i: %i\n", i + 1, stack[i]);
+		}
+	}
 	
-	/* print back processing of mcode */
-
-	
-
-	for (i = 0; i < (get_mem_size('H', line_count)); i++){
-		printf("H%i: %i\n", i + 1, heap[i]);
-	}
-		
-	for (i = 0; i < (get_mem_size('D', line_count)); i++){
-		printf("D%i: %i\n", i + 1, data[i]);
-	}
-
-	for (i = 0; i < (get_mem_size('S', line_count)); i++){
-		printf("S%i: %i\n", i + 1, stack[i]);
-	}
-
 	printf("\nAUSFUEHRUNG:\n\n");
 	execute_program();
 
@@ -331,12 +277,10 @@ int process_line(int char_count, int line_count, char line[]){
 					if (strcmp(temp_line.command, v_coms[k].command) == 0){
 						break;
 					} else if ((strcmp(temp_line.command, v_coms[k].command) != 0) && (k == 10)) {
-						printf("\nInvalid command in line: %i\n", line_count + 1);
+						printf("\nUngueltiger Befehl in Zeile: %i\n", line_count + 1);
 						return 0;
 					}
 				}
-				
-				
 			}
 			
 			/* extract type and value 1 */ 
@@ -448,7 +392,6 @@ int sum_array(char line[]){
 		return sum * vz;
 		
 	} else {
-		printf("%i", INT_MIN);
 		return INT_MIN;
 	}
 }
