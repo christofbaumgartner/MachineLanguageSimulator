@@ -16,8 +16,9 @@ int print_help(char *filename)
 	printf(" JUMP0     \tA,B\tJump to program pointer A in case value of memory address B equals 0.\n");
 	printf(" RETURN    \tA\tReturn value of memory address A.\n");
 	printf(" RETURN0   \tA,B\tReturn value of memory address A in case value of memory address B equals 0.\n\n");
-	printf(" PROGRAM address has the format Px while 'x' is the line number.\n DATA address has the format Dx while 'x' is the line number.\n"); 
-	printf(" STACK address has the format Sx while 'x' is the line number.\n HEAP address has the format Hx while 'x' is the line number.\n\n");
+	printf(" PROGRAM step has the format Px while 'x' is the line number.\n DATA address has the format Dx while 'x' is the memory address.\n"); 
+	printf(" STACK address has the format Sx while 'x' is the memory address.\n HEAP address has the format Hx while 'x' is the memory address.\n\n");
+	printf(" Addresses of successive memory cells are numbered consecutively. Do not leave any gaps.\n\n");
 	printf(" Separation either by 'Space', 'Tab' or ','.\n\n");
 	printf(" Example code:\n\n P1\tINIT     \tS2\n P2\tINCREMENT \tS2\n P3\tJUMP0   \tP7,S1\n P4\tADD     \tS2,S2\n P5\tDECREMENT\tS1\n P6\tJUMP    \tP3\n P7\tRETURN  \tS2\n S1\t2\n S2\n");
 	return 0;

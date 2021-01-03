@@ -54,12 +54,12 @@ int execute_program()
 		if(program_line_found == 1)
 		{
 			int line_status;
-			printf("Register %c%i wird ausgefuehrt:\n", (*current_code_line).regtype, (*current_code_line).step );
+			printf("Executing register: %c%i\n", (*current_code_line).regtype, (*current_code_line).step );
 			line_status = execute_program_line(current_code_line);
 			clock_number++;
 			if(line_status != 0)
 			{
-				printf("Fehler beim ausführen der Zeile: %i\n", program_pointer - 1);
+				printf("Error while processing line: %i\n", program_pointer - 1);
 				return 1;
 			}
 			continue;
@@ -67,14 +67,14 @@ int execute_program()
 		/* no P1 was found in the program */
 		else if(program_line_found == -1)
 		{
-			printf("Keinen Programmcode gefunden bzw. kein Register P1\n");
+			printf("No program code or no register P1\n");
 			return 2;
 		}
 		/* No P Register with the current program_pointer was not found -> End Program */
 		else
 		{
-			printf("Programm beendeet bei Zeile: %i\n", program_pointer - 1);
-			printf("Benoetigte Takte: %i\n", clock_number);
+			printf("Program termination line: %i\n", program_pointer - 1);
+			printf("Required cycles: %i\n", clock_number);
 			break;
 		}
 	}
@@ -134,7 +134,7 @@ int execute_program_line(struct mcode_line* code_line)
 	}
 	else
 	{
-		printf("%s ist kein valider Befehl.\n", (*code_line).command);
+		printf("%s is not a valid command.\n", (*code_line).command);
 		return 1;
 	}
 	
@@ -144,7 +144,7 @@ int execute_program_line(struct mcode_line* code_line)
 int init(char register_type, int register_number)
 {
 	int result = write_value(register_type, register_number, 0);
-	printf("\tBEFEHL: INIT %c%i\n", register_type, register_number);
+	printf("\tCOMMAND: INIT %c%i\n", register_type, register_number);
 	printf("\tREGISTER: %c%i: %i\n", register_type, register_number, 0);
 	return result;
 }
@@ -154,7 +154,7 @@ int add(char register_type_1, int register_number_1, char register_type_2, int r
 	int value = get_value(register_type_1, register_number_1);
 	int value2 = get_value(register_type_2, register_number_2);
 	int result = write_value(register_type_1, register_number_1, value + value2);
-	printf("\tBEFEHL: ADD %c%i,%c%i\n", register_type_1, register_number_1, register_type_2, register_number_2);
+	printf("\tCOMMAND: ADD %c%i,%c%i\n", register_type_1, register_number_1, register_type_2, register_number_2);
 	printf("\tREGISTER: %c%i: %i, %c%i: %i\n", register_type_1, register_number_1, value + value2, register_type_2, register_number_2, value2 );
 	return result;
 }
@@ -164,7 +164,7 @@ int sub(char register_type_1, int register_number_1, char register_type_2, int r
 	int value = get_value(register_type_1, register_number_1);
 	int value2 = get_value(register_type_2, register_number_2);
 	int result = write_value(register_type_1, register_number_1, value - value2);
-	printf("\tBEFEHL: SUB %c%i,%c%i\n", register_type_1, register_number_1, register_type_2, register_number_2);
+	printf("\tCOMMAND: SUB %c%i,%c%i\n", register_type_1, register_number_1, register_type_2, register_number_2);
 	printf("\tREGISTER: %c%i: %i, %c%i: %i\n", register_type_1, register_number_1, value - value2, register_type_2, register_number_2, value2 );
 	return result;
 }
@@ -173,7 +173,7 @@ int decrement(char register_type, int register_number)
 {
 	int value = get_value(register_type, register_number);
 	int result = write_value(register_type, register_number, --value);
-	printf("\tBEFEHL: DECREMENT %c%i\n", register_type, register_number);
+	printf("\tCOMMAND: DECREMENT %c%i\n", register_type, register_number);
 	printf("\tREGISTER: %c%i: %i\n", register_type, register_number, value);
 	return result;
 }
@@ -182,15 +182,15 @@ int cond_decrement(char decr_register_type, int decr_register_number, char cond_
 {
 	int value = get_value(decr_register_type, decr_register_number);
 	int cond_value = get_value(cond_register_type, cond_register_number);
-	printf("\tBEFEHL: DECREMENT0 %c%i, %c%i\n", decr_register_type, decr_register_number, cond_register_type, cond_register_number);
+	printf("\tCOMMAND: DECREMENT0 %c%i, %c%i\n", decr_register_type, decr_register_number, cond_register_type, cond_register_number);
 	if(cond_value == 0)
 	{
 		int result = write_value(decr_register_type, decr_register_number, --value);
-		printf("\tBEDINGUNG in %c%i ist %i. Wert wird reduziert\n", cond_register_type, cond_register_number, cond_value);
+		printf("\tCONDITION in %c%i is %i. Value decreased\n", cond_register_type, cond_register_number, cond_value);
 		printf("\tREGISTER: %c%i: %i, %c%i: %i\n", decr_register_type, decr_register_number, value, cond_register_type, cond_register_number, cond_value );
 		return result;
 	}
-	printf("\tBEDINGUNG in %c%i ist %i. Wert wird nicht reduziert\n", cond_register_type, cond_register_number, cond_value);
+	printf("\tCONDITION in %c%i is %i. Value not decreased\n", cond_register_type, cond_register_number, cond_value);
 	printf("\tREGISTER: %c%i: %i, %c%i: %i\n", decr_register_type, decr_register_number, value, cond_register_type, cond_register_number, cond_value );
 	return 0;
 }
@@ -199,7 +199,7 @@ int increment(char register_type, int register_number)
 {
 	int value = get_value(register_type, register_number);
 	int result = write_value(register_type, register_number, ++value);
-	printf("\tBEFEHL: INCREMENT %c%i\n", register_type, register_number);
+	printf("\tCOMMAND: INCREMENT %c%i\n", register_type, register_number);
 	printf("\tREGISTER: %c%i: %i\n", register_type, register_number, value);
 	return result;
 }
@@ -208,22 +208,22 @@ int cond_increment(char incr_register_type, int incr_register_number, char cond_
 {
 	int value = get_value(incr_register_type, incr_register_number);
 	int cond_value = get_value(cond_register_type, cond_register_number);
-	printf("\tBEFEHL: DECREMENT0 %c%i, %c%i\n", incr_register_type, incr_register_number, cond_register_type, cond_register_number);
+	printf("\tCOMMAND: DECREMENT0 %c%i, %c%i\n", incr_register_type, incr_register_number, cond_register_type, cond_register_number);
 	if(cond_value == 0)
 	{
 		int result = write_value(incr_register_type, incr_register_number, ++value);
-		printf("\tBEDINGUNG in %c%i ist %i. Wert wird erhöht\n", cond_register_type, cond_register_number, cond_value);
+		printf("\tCONDITION in %c%i is %i. Value increased\n", cond_register_type, cond_register_number, cond_value);
 		printf("\tREGISTER: %c%i: %i, %c%i: %i\n", incr_register_type, incr_register_number, result, cond_register_type, cond_register_number, cond_value );
 		return result;
 	}
-	printf("\tBEDINGUNG in %c%i ist %i. Wert wird nicht erhöht\n", cond_register_type, cond_register_number, cond_value);
+	printf("\tCONDITION in %c%i is %i. Value not increased\n", cond_register_type, cond_register_number, cond_value);
 	printf("\tREGISTER: %c%i: %i, %c%i: %i\n", incr_register_type, incr_register_number, value, cond_register_type, cond_register_number, cond_value );
 	return 0;
 }
 
 int jump(char register_type, int register_number)
 {
-	printf("\tBEFEHL: JUMP %c%i\n", register_type, register_number);
+	printf("\tCOMMAND: JUMP %c%i\n", register_type, register_number);
 	if(register_type == 'P')
 	{
 		program_pointer = register_number;
@@ -235,16 +235,16 @@ int jump(char register_type, int register_number)
 int cond_jump(char jump_register_type, int jump_register_number, char cond_register_type, int cond_register_number)
 {
 	int cond_value = get_value(cond_register_type, cond_register_number);
-	printf("\tBEFEHL: JUMP0 %c%i, %c%i\n", jump_register_type, jump_register_number, cond_register_type, cond_register_number);
+	printf("\tCOMMAND: JUMP0 %c%i, %c%i\n", jump_register_type, jump_register_number, cond_register_type, cond_register_number);
 	if(cond_value == 0 && jump_register_type == 'P')
 	{
-		printf("\tBEDINGUNG in %c%i ist %i. Sprung zu %c%i\n", cond_register_type, cond_register_number, cond_value, jump_register_type, jump_register_number);
+		printf("\tCONDITION in %c%i is %i. Jump to %c%i\n", cond_register_type, cond_register_number, cond_value, jump_register_type, jump_register_number);
 		program_pointer = jump_register_number;
 		return 0;
 	}
 	else if(cond_value != 0)
 	{
-		printf("\tBEDINGUNG in %c%i ist %i. Kein Sprung\n", cond_register_type, cond_register_number, cond_value);
+		printf("\tCONDITION in %c%i is %i. No jump\n", cond_register_type, cond_register_number, cond_value);
 		return 0;
 	}
 	return 1;
@@ -253,8 +253,8 @@ int cond_jump(char jump_register_type, int jump_register_number, char cond_regis
 int return_n(char return_register_type, int return_register_number)
 {
 	int value = get_value(return_register_type, return_register_number);
-	printf("\tBEFEHL: RETURN %c%i\n", return_register_type, return_register_number);
-	printf("\tRUECKGABE von %c%i: %i\n", return_register_type, return_register_number, value);
+	printf("\tCOMMAND: RETURN %c%i\n", return_register_type, return_register_number);
+	printf("\tRETURN: %c%i: %i\n", return_register_type, return_register_number, value);
 	return 0;
 }
 
@@ -262,14 +262,14 @@ int cond_return_n(char return_register_type, int return_register_number, char co
 {
 	int cond_value = get_value(cond_register_type, cond_register_number);
 	int value = get_value(return_register_type, return_register_number);
-	printf("\tBEFEHL: RETURN0 %c%i, %c%i\n", return_register_type, return_register_number, cond_register_type, cond_register_number);
+	printf("\tCOMMAND: RETURN0 %c%i, %c%i\n", return_register_type, return_register_number, cond_register_type, cond_register_number);
 	if(cond_value == 0)
 	{
-		printf("\tBEDINGUNG in %c%i ist %i.\n", cond_register_type, cond_register_number, cond_value);
-		printf("\tRUECKGABE von %c%i: %i\n", return_register_type, return_register_number, value);
+		printf("\tCONDITION in %c%i is %i.\n", cond_register_type, cond_register_number, cond_value);
+		printf("\tRETURN: %c%i: %i\n", return_register_type, return_register_number, value);
 		return 0;
 	}
-	printf("\tBEDINGUNG in %c%i ist %i. Keine Rückgabe\n", cond_register_type, cond_register_number, cond_value);
+	printf("\tCONDITION in %c%i is %i. No return.\n", cond_register_type, cond_register_number, cond_value);
 	return 1;
 }
 
