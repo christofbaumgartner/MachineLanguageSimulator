@@ -58,6 +58,8 @@ int main(int argc, char * argv[]){
 			char_count++;
 			j++;
 		
+		} else if ((cmdline_input[i] == '\n') && (cmdline_input[i + 1] == '\n')){
+			
 		} else {
 			line[j] = '\0';
 			file_check = process_line(char_count, line_count, line);
@@ -82,37 +84,41 @@ int main(int argc, char * argv[]){
 
 	/* fill stack, data and heap arrays from mcode[]*/
 	/* stack */
-	stack = malloc(get_mem_size('S', line_count) * sizeof(int));
+	memsizes[0] = get_mem_size('S', line_count);
+	memsizes[1] = get_mem_size('D', line_count);
+	memsizes[2] = get_mem_size('H', line_count);
+	
+	stack = malloc(memsizes[0] * sizeof(int));
 	if (stack == NULL) {
 		printf("STACK memory could not be allocated.\n");
 		return 1;
 	}
-	memsizes[0] = get_mem_size('S', line_count);
-	for (i = 0; i < get_mem_size('S', line_count); i++){
+	
+	for (i = 0; i < memsizes[0]; i++){
 		stack[i] = INT_MIN;
 	}
 	fill_mem_array(stack, 'S', line_count);
 		
 	/* data */
-	data = malloc(get_mem_size('D', line_count) * sizeof(int));
+	data = malloc(memsizes[1] * sizeof(int));
 	if (data == NULL) {
 		printf("DATA memory could not be allocated.\n");
 		return 1;
 	}
-	memsizes[1] = get_mem_size('D', line_count);
-	for (i = 0; i < get_mem_size('D', line_count); i++){
+	
+	for (i = 0; i < memsizes[1]; i++){
 		data[i] = INT_MIN;
 	}
 	fill_mem_array(data, 'D', line_count);
 	
 	/* heap */
-	heap = malloc(get_mem_size('H', line_count) * sizeof(int));
+	heap = malloc(memsizes[2] * sizeof(int));
 	if (heap == NULL) {
 		printf("HEAP memory could not be allocated.\n");
 		return 1;
 	}
-	memsizes[2] = get_mem_size('H', line_count);
-	for (i = 0; i < get_mem_size('H', line_count); i++){
+	
+	for (i = 0; i < memsizes[2]; i++){
 		heap[i] = INT_MIN;
 	}
 	fill_mem_array(heap, 'H', line_count);
@@ -120,22 +126,22 @@ int main(int argc, char * argv[]){
 	
 	/* Check for consistent stack, data and heap variables against user input. If non existent query user and add to s,d,h array. */
 	
-	if(check_valid_memdata(line_count, stack, data, heap, memsizes)){
-		printf("\nAll memory data consistent.\n");
+	if (check_valid_memdata(line_count, stack, data, heap, memsizes)){
+		printf("\nAll memory data consistent.\n\n");
 	}
 	
 
 	if(VERBOSE_DEBUG_OUTPUT){
 		/* print back processing of mcode to memory arrays */
-		for (i = 0; i < (get_mem_size('H', line_count)); i++){
+		for (i = 0; i < memsizes[2]; i++){
 			printf("H%i: %i\n", i + 1, heap[i]);
 		}
 			
-		for (i = 0; i < (get_mem_size('D', line_count)); i++){
+		for (i = 0; i < memsizes[1]; i++){
 			printf("D%i: %i\n", i + 1, data[i]);
 		}
 
-		for (i = 0; i < (get_mem_size('S', line_count)); i++){
+		for (i = 0; i < memsizes[0]; i++){
 			printf("S%i: %i\n", i + 1, stack[i]);
 		}
 	}
