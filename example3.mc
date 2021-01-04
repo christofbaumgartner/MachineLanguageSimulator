@@ -7,8 +7,8 @@ P6 RETURN D1
 P7 RETURN D2
 D1 0
 D2 1
+D3 66
 S3 3
 S1 1
-
-
-
+H1 1
+H2 1

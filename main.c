@@ -438,11 +438,18 @@ int sum_array(char line[]){
 int get_mem_size(char mtype, int line_count){
 	
 	int i;
-	int size = 0, double_check = 0;
+	int size = 0, double_check = 0, index_count = 1;
 	
 	for (i = 0; i < line_count; i++){
-		if (mcode[i].regtype == mtype){
+		if ((mcode[i].regtype == mtype) && (mcode[i].val1 >= index_count)){
 			size++;
+			index_count = size;
+			
+		} else if ((mcode[i].regtype == mtype) && (mcode[i].val1 < index_count)) {
+			
+			printf("Error in program code, memory of type %c assigned more than once with same address value!\n\n", mcode[i].regtype);
+			return -1;
+			
 		}
 	} 
 
@@ -455,7 +462,11 @@ int get_mem_size(char mtype, int line_count){
 	if(VERBOSE_DEBUG_OUTPUT == 2){
 		printf("\n%c type memory addresses used in program code: %i\n", mtype, double_check);
 		printf("%c type memory addresses defined in file: %i\n", mtype, size);
-		printf("Number of undefined memory addresses: %i\n", double_check - size);
+		if (double_check > size){
+			printf("%c type memory addresses used in code but undefined: %i\n", mtype, double_check - size);
+		} else if (double_check < size){ 
+			printf("%c type memory addresses defined but not used in code: %i\n", mtype, size - double_check);
+		}
 	}
 	
 	if (double_check > size){

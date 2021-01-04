@@ -40,6 +40,7 @@ int print_back_input(char *cmdline_input)
 			printf("%c", cmdline_input[i]);
 		} 
 	}
+	printf("\n");
 	return 0;
 }
 
