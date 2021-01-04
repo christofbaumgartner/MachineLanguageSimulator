@@ -11,6 +11,7 @@
 struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 int *stack, *data, *heap;
 int memsizes[3];
+int error = 0;
 
 int process_line(int char_count, int line_count, char line[]);
 int sum_array(char sline[]);
@@ -18,11 +19,12 @@ int get_mem_size(char mtype, int line_count);
 void fill_mem_array(int array[], char mtype, int line_count);
 int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int memsizes[]);
 int flush_buff(void);
+int read_buff(void);
 
 
 int main(int argc, char * argv[]){
 	
-	int i = 0, j = 0, char_count = 0, file_check = 1, line_count = 0, error = 0;
+	int i = 0, j = 0, char_count = 0, line_count = 0;
 	char c;
 	char cmdline_input[MAX_NO_OF_ADDRESSES * MAX_INPUT_LINE_LENGTH];
 	char line[MAX_INPUT_LINE_LENGTH];
@@ -31,11 +33,11 @@ int main(int argc, char * argv[]){
 	if ((argc == 2) && ((strcmp(argv[1], "--help") == 0) || (strcmp(argv[1], "-h") == 0))){
 		return print_help(argv[0]);
 	}
-
+	
 	print_code_promt();
 	c = getchar();
 	
-	/* check input from stdin */
+	/* get input from stdin */
 	while (c != '\0' && i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) -1){
 		if (c == '?'){
 			print_help(argv[0]);
@@ -49,6 +51,8 @@ int main(int argc, char * argv[]){
 		}
 	}
 	
+	flush_buff();
+	
 	print_back_input(cmdline_input);
 
 	/* Split to single lines and process */
@@ -59,13 +63,11 @@ int main(int argc, char * argv[]){
 			j++;
 		
 		} else if ((cmdline_input[i] == '\n') && (cmdline_input[i + 1] == '\n')){
+			j++;
 			
 		} else {
 			line[j] = '\0';
-			file_check = process_line(char_count, line_count, line);
-			if (file_check == 0){
-				error = -1;
-			}
+			process_line(char_count, line_count, line);
 			j = 0;
 			char_count = 0;
 			line_count++;
@@ -83,14 +85,19 @@ int main(int argc, char * argv[]){
 	
 
 	/* fill stack, data and heap arrays from mcode[]*/
-	/* stack */
+	
+	/* memsizes[i]: 0 = stack, 1 = data, 2 = heap. */
 	memsizes[0] = get_mem_size('S', line_count);
 	memsizes[1] = get_mem_size('D', line_count);
 	memsizes[2] = get_mem_size('H', line_count);
 	
+	/* stack */
 	stack = malloc(memsizes[0] * sizeof(int));
 	if (stack == NULL) {
-		printf("STACK memory could not be allocated.\n");
+		if(VERBOSE_DEBUG_OUTPUT){
+			printf("STACK memory could not be allocated.\n");
+		}
+		error = 30;
 		return 1;
 	}
 	
@@ -102,7 +109,10 @@ int main(int argc, char * argv[]){
 	/* data */
 	data = malloc(memsizes[1] * sizeof(int));
 	if (data == NULL) {
-		printf("DATA memory could not be allocated.\n");
+		if(VERBOSE_DEBUG_OUTPUT){
+			printf("DATA memory could not be allocated.\n");
+		}
+		error = 30;
 		return 1;
 	}
 	
@@ -114,7 +124,10 @@ int main(int argc, char * argv[]){
 	/* heap */
 	heap = malloc(memsizes[2] * sizeof(int));
 	if (heap == NULL) {
-		printf("HEAP memory could not be allocated.\n");
+		if(VERBOSE_DEBUG_OUTPUT){
+			printf("HEAP memory could not be allocated.\n");
+		}
+		error = 30;
 		return 1;
 	}
 	
@@ -127,9 +140,12 @@ int main(int argc, char * argv[]){
 	/* Check for consistent stack, data and heap variables against user input. If non existent query user and add to s,d,h array. */
 	
 	if (check_valid_memdata(line_count, stack, data, heap, memsizes)){
-		printf("\nAll memory data consistent.\n\n");
+		if(VERBOSE_DEBUG_OUTPUT){
+			printf("\nAll memory data consistent.\n\n");
+		}
+	} else {
+		error = 22;
 	}
-	
 
 	if(VERBOSE_DEBUG_OUTPUT){
 		/* print back processing of mcode to memory arrays */
@@ -153,7 +169,7 @@ int main(int argc, char * argv[]){
 	free(stack);
 	free(data);
 
-	(error == 0) ? printf("\nExitCode: OK\n") : printf("\nExitCode: ERROR\n");
+	(error == 0) ? printf("\nExitCode: OK\n") : printf("\nExitCode: ERROR %i\n", error);
 	return 0;
 	
 }
@@ -277,7 +293,10 @@ int process_line(int char_count, int line_count, char line[]){
 				
 				
 			} else if (i == 0){
-				printf("\nInvalid programm code in line: %i.\n", line_count + 1);
+				if(VERBOSE_DEBUG_OUTPUT){
+					printf("\nInvalid programm code in line: %i.\n", line_count + 1);
+				}
+				error = 10;
 				return 0;
 			}
 			
@@ -311,7 +330,10 @@ int process_line(int char_count, int line_count, char line[]){
 					if (strcmp(temp_line.command, v_coms[k].command) == 0){
 						break;
 					} else if ((strcmp(temp_line.command, v_coms[k].command) != 0) && (k == 10)) {
-						printf("\nInvalid command in line: %i\n", line_count + 1);
+						if(VERBOSE_DEBUG_OUTPUT){
+							printf("\nInvalid command in line: %i\n", line_count + 1);
+						}
+						error = 13;
 						return 0;
 					}
 				}
@@ -332,7 +354,10 @@ int process_line(int char_count, int line_count, char line[]){
 				if ((toupper(line[j]) == 'P' || toupper(line[j]) == 'D' || toupper(line[j]) == 'S' || toupper(line[j]) == 'H')){
 					temp_line.type1 = toupper(line[j]);				
 				} else {
-					printf("Invalid programm code in line: %i.\n", line_count);
+					if(VERBOSE_DEBUG_OUTPUT){
+						printf("Invalid programm code in line: %i.\n", line_count + 1);
+					}
+					error = 10;
 					return 0;
 				}
 				
@@ -446,8 +471,10 @@ int get_mem_size(char mtype, int line_count){
 			index_count = size;
 			
 		} else if ((mcode[i].regtype == mtype) && (mcode[i].val1 < index_count)) {
-			
-			printf("Error in program code, memory of type %c assigned more than once with same address value!\n\n", mcode[i].regtype);
+			if(VERBOSE_DEBUG_OUTPUT){
+				printf("Error in program code, memory of type %c assigned more than once with same address value!\n\n", mcode[i].regtype);
+			}
+			error = 12;
 			return -1;
 			
 		}
@@ -492,7 +519,7 @@ void fill_mem_array(int array[], char mtype, int line_count){
 
 int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int memsizes[]){
 	
-	int i, input_num, status = 0;
+	int i;
 	
 	for (i = 0; i < line_count; i++){
 		if (mcode[i].iscommand){
@@ -507,7 +534,10 @@ int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int
 				} else if (mcode[i].type1 == 'H'){
 					heap[(mcode[i].val1 - 1)] = 0; 
 				} else {
-					printf("Invalid memory type. Can not initialize.\n");
+					if(VERBOSE_DEBUG_OUTPUT){
+						printf("Invalid memory type. Can not initialize.\n");
+					}
+					error = 22;
 					return 0;
 				}
 			}
@@ -518,21 +548,21 @@ int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int
 	}
 	
 	for (i = 0; i < memsizes[0]; i++){
-		if (stack[i] == INT_MIN){
-			/* STUB! Get user input, verify and write to stack[i] position.
+		
+		do{
 			
-			memsizes[i]: 0 = stack, 1 = data, 2 = heap.
-			
-			
-			printf("Enter Value for S%i:", i + 1);
-			status = scanf("%i", &input_num);
-			if (status == 0 || getchar () != '\n' || (input_num == INT_MIN)){
-					printf("Invalid input. Enter Value for S%i:", i + 1);
-					status = scanf("%i", &input_num);
+			if (stack[i] == INT_MIN){
+				printf("\nPlease enter Value for S%i:\n\n", i + 1);
+				stack[i] = read_buff();
+				if (stack[i] == INT_MIN){
+					printf("Invalid input\n");
+					error = 15;
+					return 0;
+				}
+				
 			}
-			
-			*/
 		}
+		while (stack[i] == INT_MIN);
 		
 	}
 	
@@ -544,11 +574,38 @@ int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int
 }
 
 
-
 int flush_buff(void){
-	
+
 	int c;
-	while ((c = getchar()) != '\n' && c != EOF)
+	while ((c = getchar()) != '\n' && (c != EOF))
 	{}
 	return c != EOF;
+	/* returns 0 for buffer error, else 1 */
 }
+
+
+int read_buff(void){
+	
+	int num_input;
+	int status;
+	int c = '\0';
+		
+	status = scanf("%i", &num_input);
+	printf("Num is %i\n", num_input);
+	
+	if (status == EOF){
+		error = 14;
+		return INT_MIN;
+	}
+	if (status != 1 || num_input < (INT_MIN + 1) || (c = getchar ()) != '\n'){
+		if (c == EOF || !flush_buff()){
+			error = 14;
+			return INT_MIN;
+		}
+		error = 15;
+		return INT_MIN;	
+	} 
+	
+	return num_input;
+}
+
