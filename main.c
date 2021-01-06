@@ -18,8 +18,6 @@ int sum_array(char sline[]);
 int get_mem_size(char mtype, int line_count); 
 void fill_mem_array(int array[], char mtype, int line_count);
 int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int memsizes[]);
-int flush_buff(void);
-int read_buff(void);
 
 
 int main(int argc, char * argv[]){
@@ -50,6 +48,8 @@ int main(int argc, char * argv[]){
 			cmdline_input[i++] = '\0';
 		}
 	}
+	
+	/* initital flush */
 	
 	flush_buff();
 	
@@ -437,13 +437,15 @@ int sum_array(char line[]){
 	
 	int i = 0, sum = 0, factor = 1, vz = 1;
 	
+	/* find sign */
 	if (line[i] == 45){
 		vz = -1;
 		i++;
 	}
 	
+	/* get number from ascii */
 	if (line[i] > 47 && line[i] < 58 && line[i] != '\0'){
-		
+		 
 		while (line[i] > 47 && line[i] < 58 && line[i] != '\0'){
 			sum = sum * factor + ((line[i] - 48));
 			if (factor == 1){
@@ -451,12 +453,12 @@ int sum_array(char line[]){
 			}
 			i++;
 		}
-	
-		return sum * vz;
-		
+					
 	} else {
 		return INT_MIN;
 	}
+	
+	return sum * vz;
 }
 
 
@@ -571,41 +573,5 @@ int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int
 	
 	
 	return 1;
-}
-
-
-int flush_buff(void){
-
-	int c;
-	while ((c = getchar()) != '\n' && (c != EOF))
-	{}
-	return c != EOF;
-	/* returns 0 for buffer error, else 1 */
-}
-
-
-int read_buff(void){
-	
-	int num_input;
-	int status;
-	int c = '\0';
-		
-	status = scanf("%i", &num_input);
-	printf("Num is %i\n", num_input);
-	
-	if (status == EOF){
-		error = 14;
-		return INT_MIN;
-	}
-	if (status != 1 || num_input < (INT_MIN + 1) || (c = getchar ()) != '\n'){
-		if (c == EOF || !flush_buff()){
-			error = 14;
-			return INT_MIN;
-		}
-		error = 15;
-		return INT_MIN;	
-	} 
-	
-	return num_input;
 }
 

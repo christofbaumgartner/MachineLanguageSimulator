@@ -2,6 +2,8 @@
 #define TYPES_H_INCLUDED
 
 #include "config.h"
+#include <stdio.h>
+#include <limits.h>
 
 struct mcode_line{
 		char regtype;
@@ -16,8 +18,6 @@ struct mcode_line{
 
 struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 extern int *stack, *data, *heap;
-
-int flush_buff(void);
-int read_buff(void);
+extern int error;
 
 #endif
