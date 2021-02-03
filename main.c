@@ -549,6 +549,8 @@ int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int
 		
 	}
 	
+	/* get missing values for stack, data and heap */
+	
 	for (i = 0; i < memsizes[0]; i++){
 		
 		do{
@@ -607,7 +609,7 @@ int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int
 	}
 	
 	
-	/* also for data and heap */
+	
 		
 	
 	
