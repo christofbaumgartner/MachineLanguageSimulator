@@ -10,6 +10,6 @@
 /* Max length for a line of pseudo machine code */
 #define MAX_INPUT_LINE_LENGTH 22
 /* Enables verbose debug logging to the console (0: disabled, 1: enabled, 2: extreme debug) */
-#define VERBOSE_DEBUG_OUTPUT 1
+#define VERBOSE_DEBUG_OUTPUT 2
 
 #endif

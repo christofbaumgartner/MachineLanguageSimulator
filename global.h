@@ -20,4 +20,7 @@ struct mcode_line mcode[MAX_NO_OF_ADDRESSES];
 extern int *stack, *data, *heap;
 extern int error;
 
+int flush_buff(void);
+int read_buff(void);
+
 #endif

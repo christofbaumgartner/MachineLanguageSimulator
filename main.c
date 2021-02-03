@@ -35,6 +35,7 @@ int main(int argc, char * argv[]){
 	print_code_promt();
 	c = getchar();
 	
+	
 	/* get input from stdin */
 	while (c != '\0' && i < (MAX_INPUT_LINE_LENGTH * MAX_NO_OF_ADDRESSES) -1){
 		if (c == '?'){
@@ -50,9 +51,8 @@ int main(int argc, char * argv[]){
 	}
 	
 	/* initital flush */
-	
 	flush_buff();
-	
+		
 	print_back_input(cmdline_input);
 
 	/* Split to single lines and process */
@@ -339,7 +339,7 @@ int process_line(int char_count, int line_count, char line[]){
 				}
 			}
 			
-			/* extract type and value 1 */ 
+			/* extract type and value 1 */
 			
 			if ((temp_line.iscommand == 1) && (div_count == 2)){
 				j = 0;
@@ -567,6 +567,45 @@ int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int
 		while (stack[i] == INT_MIN);
 		
 	}
+	
+	for (i = 0; i < memsizes[1]; i++){
+		
+		do{
+			
+			if (data[i] == INT_MIN){
+				printf("\nPlease enter Value for D%i:\n\n", i + 1);
+				data[i] = read_buff();
+				if (data[i] == INT_MIN){
+					printf("Invalid input\n");
+					error = 15;
+					return 0;
+				}
+				
+			}
+		}
+		while (data[i] == INT_MIN);
+		
+	}
+	
+	for (i = 0; i < memsizes[2]; i++){
+		
+		do{
+			
+			if (heap[i] == INT_MIN){
+				printf("\nPlease enter Value for H%i:\n\n", i + 1);
+				heap[i] = read_buff();
+				if (heap[i] == INT_MIN){
+					printf("Invalid input\n");
+					error = 15;
+					return 0;
+				}
+				
+			}
+		}
+		while (heap[i] == INT_MIN);
+		
+	}
+	
 	
 	/* also for data and heap */
 		

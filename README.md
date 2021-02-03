@@ -21,9 +21,9 @@ program.exe
 ## Known issues
 
 * Limited support for negative numbers
+* Mixed register value that starts with digit and contains letters is only read until first letter, no error return. ie. S1 3234r54 => S1 3234
 * Input buffer is not flushed
-* Wenn das Maschinenprogramm Parameter (z.B. in S1) erwartet, soll der Benutzer diese eingeben
-können.
+* Wenn das Maschinenprogramm Parameter (z.B. in S1) erwartet, soll der Benutzer diese eingeben können.
 * Combined summary block of all RETURNS or ERRORS at the end. Possible Errors:
   * 010 - Error Parsing: Unkown Parser Error
   * 011 - Error Parsing: Invalid Register

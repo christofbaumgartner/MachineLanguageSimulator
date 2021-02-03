@@ -1,10 +1,5 @@
 #include "global.h"
 
-#include <stdio.h>
-#include <limits.h>
-
-int flush_buff(void);
-int read_buff(void);
 
 int flush_buff(void){
 
@@ -21,7 +16,12 @@ int read_buff(void){
 	int num_input;
 	int status;
 	int c = '\0';
-		
+	
+	/* for (i = 1; i < 100; i++){
+		getchar();
+	}*/
+	
+	
 	status = scanf("%i", &num_input);
 	printf("Num is %i\n", num_input);
 	
