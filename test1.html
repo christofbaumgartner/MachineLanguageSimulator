@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      word-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="machine-language-simulator">Machine Language Simulator</h1>
+<h2 id="summary">Summary</h2>
+<p>This is a program to simulate the execution of machine code.</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>Compile the code with gcc</p>
+<pre><code>gcc main.c simulator.c cmd_writer.c global.c -ansi -pedantic -Wall -Wextra -o program.exe</code></pre>
+<p>and run ‘program.exe’ (or your equivalent) and type in your pseudo machine code. When done type ‘!’ on a new line.</p>
+<p>Alternativley you can pass a file like this:</p>
+<pre><code>program.exe &lt; yourcode.mc </code></pre>
+<h3 id="example-code">Example Code</h3>
+<pre><code>P1     INIT            S2  
+P2     INCREMENT       S2  
+P3     JUMP0           P7,S1  
+P4     ADD             S2,S2  
+P5     DECREMENT       S1  
+P6     JUMP            P3  
+P7     RETURN          S2  
+S1     2  
+S2  
+!</code></pre>
+<h2 id="machine-code-overview">Machine Code Overview</h2>
+<p>Valid commands are:</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 13%" />
+<col style="width: 63%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Command</th>
+<th>Parameters</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>INIT</td>
+<td>A</td>
+<td>Store value 0 at address A.</td>
+</tr>
+<tr class="even">
+<td>ADD</td>
+<td>A,B</td>
+<td>Add to memory address A the value of memory address B.</td>
+</tr>
+<tr class="odd">
+<td>SUB</td>
+<td>A,B</td>
+<td>Substract from memory address A the value of memory address B.</td>
+</tr>
+<tr class="even">
+<td>DECREMENT</td>
+<td>A</td>
+<td>Decrease the value of memory address A by 1.</td>
+</tr>
+<tr class="odd">
+<td>DECREMENT0</td>
+<td>A,B</td>
+<td>Decrease the value of memory address A by 1 in case value of memory address B equals 0.</td>
+</tr>
+<tr class="even">
+<td>INCREMENT</td>
+<td>A</td>
+<td>Increase the value of memory address A by 1.</td>
+</tr>
+<tr class="odd">
+<td>INCREMENT0</td>
+<td>A,B</td>
+<td>Increase the value of memory address A by 1 in case value of memory address B equals 0.</td>
+</tr>
+<tr class="even">
+<td>JUMP</td>
+<td>A</td>
+<td>Jump to program pointer A.</td>
+</tr>
+<tr class="odd">
+<td>JUMP0</td>
+<td>A,B</td>
+<td>Jump to program pointer A in case value of memory address B equals 0.</td>
+</tr>
+<tr class="even">
+<td>RETURN</td>
+<td>A</td>
+<td>Return value of memory address A.</td>
+</tr>
+<tr class="odd">
+<td>RETURN0</td>
+<td>A,B</td>
+<td>Return value of memory address A in case value of memory address B equals 0.</td>
+</tr>
+</tbody>
+</table>
+<p>PROGRAM step has the format Px while ‘x’ is the line number.<br />
+DATA address has the format Dx while ‘x’ is the memory address.<br />
+STACK address has the format Sx while ‘x’ is the memory address.<br />
+HEAP address has the format Hx while ‘x’ is the memory address.</p>
+<p>Addresses of successive memory cells are numbered consecutively. Do not leave any gaps.</p>
+<p>Valid values for S,D and H are from INT_MIN+1 to INT_MAX.</p>
+<p>Separation either by ‘Space’, ‘Tab’ or ‘,’.</p>
+<h2 id="configuration">Configuration</h2>
+<p>User preferences can be adjusted in the file config.h before compilation.<br />
+There are setting for max number of lines, max address size, max address content, line length and debug verbosity.</p>
+<h2 id="compile">Compile</h2>
+<h3 id="with-gcc">with gcc</h3>
+<pre><code>gcc main.c simulator.c cmd_writer.c global.c -ansi -pedantic -Wall -Wextra -o program.exe</code></pre>
+<h3 id="via-the-makefile">via the makefile</h3>
+<pre><code>make</code></pre>
+<h2 id="run">Run</h2>
+<pre><code>program.exe</code></pre>
+<h2 id="known-issues">Known issues</h2>
+<ul>
+<li>Mixed register value that starts with digit and contains letters is only read until first letter, no error returned. ie. S1 3234r54 =&gt; S1 3234</li>
+<li>User query does not work for piped input, i.e. program.exe &lt; examplecode.mc. Therefore missing or wrong parameters will result in error code.</li>
+</ul>
+<h2 id="error-codes">Error codes</h2>
+<ul>
+<li>Combined summary block of all RETURNS or ERRORS at the end. Possible Errors:
+<ul>
+<li>010 - Error Parsing: Unkown Parser Error</li>
+<li>011 - Error Parsing: Invalid Register</li>
+<li>012 - Error Parsing: Register address out of bounds</li>
+<li>013 - Error Parsing: Invalid Command</li>
+<li>014 - User Input: Buffer Error</li>
+<li>015 - User Input: Invalid input.</li>
+<li>021 - Error Execution: Program does not terminate</li>
+<li>022 - Error Execution: Register not initialized</li>
+<li>023 - Error Execution: Value out of bounds</li>
+<li>020 - Error Execution: Unkown Execution Error</li>
+<li>030 - System Error: Memory Allocation</li>
+</ul></li>
+</ul>
+</body>
+</html>
