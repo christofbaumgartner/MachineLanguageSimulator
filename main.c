@@ -522,7 +522,7 @@ void fill_mem_array(int array[], char mtype, int line_count){
 int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int memsizes[]){
 	
 	int i;
-	
+		
 	for (i = 0; i < line_count; i++){
 		if (mcode[i].iscommand){
 			
@@ -548,6 +548,8 @@ int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int
 		}
 		
 	}
+	
+	
 	
 	/* get missing values for stack, data and heap */
 	
@@ -607,11 +609,7 @@ int check_valid_memdata(int line_count, int stack[], int data[], int heap[], int
 		while (heap[i] == INT_MIN);
 		
 	}
-	
-	
-	
 		
-	
 	
 	return 1;
 }
