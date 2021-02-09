@@ -11,35 +11,22 @@
  Valid commands are:
  
 
- INIT           A       Store value 0 at address A.
- 
- ADD            A,B     Add to memory address A the value of memory address B.
- 
- SUB            A,B     Substract from memory address A the value of memory address B.
- 
- DECREMENT      A       Decrease the value of memory address A by 1.
- 
- DECREMENT0     A,B     Decrease the value of memory address A by 1 in case value of memory address B equals 0.
- 
- INCREMENT      A       Increase the value of memory address A by 1.
- 
- INCREMENT0     A,B     Increase the value of memory address A by 1 in case value of memory address B equals 0.
- 
- JUMP           A       Jump to program pointer A.
- 
- JUMP0          A,B     Jump to program pointer A in case value of memory address B equals 0.
- 
- RETURN         A       Return value of memory address A.
- 
+ INIT           A       Store value 0 at address A. 
+ ADD            A,B     Add to memory address A the value of memory address B. 
+ SUB            A,B     Substract from memory address A the value of memory address B. 
+ DECREMENT      A       Decrease the value of memory address A by 1. 
+ DECREMENT0     A,B     Decrease the value of memory address A by 1 in case value of memory address B equals 0. 
+ INCREMENT      A       Increase the value of memory address A by 1. 
+ INCREMENT0     A,B     Increase the value of memory address A by 1 in case value of memory address B equals 0. 
+ JUMP           A       Jump to program pointer A. 
+ JUMP0          A,B     Jump to program pointer A in case value of memory address B equals 0. 
+ RETURN         A       Return value of memory address A. 
  RETURN0        A,B     Return value of memory address A in case value of memory address B equals 0.
 
  
- PROGRAM step has the format Px while 'x' is the line number.
- 
- DATA address has the format Dx while 'x' is the memory address.
- 
- STACK address has the format Sx while 'x' is the memory address.
- 
+ PROGRAM step has the format Px while 'x' is the line number. 
+ DATA address has the format Dx while 'x' is the memory address. 
+ STACK address has the format Sx while 'x' is the memory address. 
  HEAP address has the format Hx while 'x' is the memory address.
 
 
@@ -52,23 +39,14 @@
  Example code:
 
  P1     INIT            S2
-
  P2     INCREMENT       S2
-
  P3     JUMP0           P7,S1
-
  P4     ADD             S2,S2
-
  P5     DECREMENT       S1
-
  P6     JUMP            P3
-
  P7     RETURN          S2
-
  S1     2
-
  S2
-
  !
  
 
